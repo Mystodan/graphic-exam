@@ -214,11 +214,12 @@ int Entity::checkSolidBlock() {
 		wall = -1;
 
 	tile.z -= 0.005f;
+	tempTile.x = tile.x;
+	tempTile.y = tile.y;
 	tempTile.z = tile.z;
-	
 	tempMode1 = getTileMode(floor(tile.x), floor(tile.y),floor(tile.z));
-	tempMode2 = getTileMode(floor(tile.x), floor(tile.y),floor(tile.z));
-	std::cout << tempMode1 << tempMode2 << "\n";
+	tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y), floor(tempTile.z));
+
 	if (tempMode1 == tempMode2) { return tempMode1; 	
 	} // returns walkable tile if possible
 	else { 
@@ -238,7 +239,7 @@ int Entity::checkFacingTile(direction facing) {
 	// saves modes as temp values
 	int tempMode1,
 		tempMode2,
-		wall = 1;
+		wall = -1;
 
 	// Pacman
 	tile.x += 0.001; tile.y += 0.001;
@@ -249,10 +250,10 @@ int Entity::checkFacingTile(direction facing) {
 		
 		tempTile.x = tile.x; 			// checks tile to the left
 		tempTile.y = tile.y + 0.99f;
+		tempTile.z = tile.z;
 
-		tempMode1 = getTileMode(floor(tile.x), floor(tile.y));
-		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y));
-
+		tempMode1 = getTileMode(floor(tile.x), floor(tile.y),floor(tile.z));
+		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y), floor(tempTile.z));
 		if (tempMode1 == tempMode2) return tempMode1; // returns walkable tile if possible
 		else return wall;
 
@@ -263,8 +264,9 @@ int Entity::checkFacingTile(direction facing) {
 		
 		tempTile.x = tile.x;			// checks tile to the right
 		tempTile.y = tile.y + 0.99f;
-		tempMode1 = getTileMode(floor(tile.x), floor(tile.y));
-		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y));
+		tempTile.z = tile.z;
+		tempMode1 = getTileMode(floor(tile.x), floor(tile.y), floor(tile.z));
+		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y), floor(tempTile.z));
 
 		if (tempMode1 == tempMode2) return tempMode1; // returns walkable tile if possible
 		else return wall;
@@ -276,9 +278,9 @@ int Entity::checkFacingTile(direction facing) {
 		
 		tempTile.x = tile.x + 0.99f;   // checks tile above
 		tempTile.y = tile.y;
-
-		tempMode1 = getTileMode(floor(tile.x), floor(tile.y));
-		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y));
+		tempTile.z = tile.z;
+		tempMode1 = getTileMode(floor(tile.x), floor(tile.y), floor(tile.z));
+		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y), floor(tempTile.z));
 		if (tempMode1 == tempMode2) return tempMode1; // returns walkable tile if possible
 		else return wall;
 
@@ -289,9 +291,9 @@ int Entity::checkFacingTile(direction facing) {
 		
 		tempTile.x = tile.x + 0.99f;    // checks tile under
 		tempTile.y = tile.y;
-
-		tempMode1 = getTileMode(floor(tile.x), floor(tile.y));
-		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y));
+		tempTile.z = tile.z;
+		tempMode1 = getTileMode(floor(tile.x), floor(tile.y), floor(tile.z));
+		tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y), floor(tempTile.z));
 		if (tempMode1 == tempMode2) return tempMode1; // returns walkable tile if possible
 		else return wall;
 
@@ -337,7 +339,6 @@ void Entity::move(GLFWwindow* window) {
 		
 		tempSpeed = 0; roundPos(1, 1, 1); 
 		map->setTileMode(posX, posY, posZ);
-		map->printAllTiles();
 		//setTileMode(posX,posY,posZ+1);
 
 		resetPos();
