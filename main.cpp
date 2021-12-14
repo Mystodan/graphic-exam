@@ -74,6 +74,7 @@ int main()
 
 
     Map*    level0 = new Map(5,5,10);
+
     Pacman* Player = new Pacman(level0);
     Shader* mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
 

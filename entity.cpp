@@ -211,14 +211,14 @@ int Entity::checkSolidBlock() {
 	// saves modes as temp values
 	int tempMode1,
 		tempMode2,
-		wall = 1;
+		wall = -1;
 
 	tile.z -= 0.005f;
 	tempTile.z = tile.z;
 	
 	tempMode1 = getTileMode(floor(tile.x), floor(tile.y),floor(tile.z));
 	tempMode2 = getTileMode(floor(tile.x), floor(tile.y),floor(tile.z));
-
+	std::cout << tempMode1 << tempMode2 << "\n";
 	if (tempMode1 == tempMode2) { return tempMode1; 	
 	} // returns walkable tile if possible
 	else { 
@@ -328,13 +328,16 @@ void Entity::move(GLFWwindow* window) {
 	if (checkFacingTile(newDir) || !singleStep) {
 		facing = newDir; speed = constSpeed; 
 	}
+	if (checkFacingTile(newDir) == 0) {
+		speed = 0;
+	}
 	if (k_space) { posZ -= 0.1f; }
 	float tempSpeed = constSpeed/10;
 	if (!checkSolidBlock()) {
 		
 		tempSpeed = 0; roundPos(1, 1, 1); 
-		map->setTileMode(posX, posY, posZ+1);
-		
+		map->setTileMode(posX, posY, posZ);
+		map->printAllTiles();
 		//setTileMode(posX,posY,posZ+1);
 
 		resetPos();

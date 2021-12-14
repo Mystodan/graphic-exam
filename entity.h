@@ -72,10 +72,8 @@ class Entity {
 		bool getIsAlive() { return this->isAlive; }
 		bool hasMoved() { return this->firstMove; }
 		void resetPos();
-		std::chrono::steady_clock::time_point				tp_Counter,
-															turnCounter;
-		std::chrono::time_point<std::chrono::steady_clock>	tp_turnTime,
-															endTurnTime;
+		std::chrono::steady_clock::time_point				turnCounter;
+		std::chrono::time_point<std::chrono::steady_clock>	endTurnTime;
 };
 
 

@@ -84,7 +84,7 @@ glm::vec3
   double getRandNum(int min, int max);
 
 
-
+	void printAllTiles();
 	void setTileMode(int x, int y, int z, bool state = false, bool entityUse = true);
 	void setSpawn(glm::vec3 newPos)	{ spawnTile = newPos; }
 	void setGameStatus(bool mode = false) { this->gameOn = mode; }

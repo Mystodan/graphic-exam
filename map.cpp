@@ -302,6 +302,7 @@ int Map::getTileMode(int x, int y, bool entityUse) {
  *	@param z - Y-position.
  */
 int Map::getTileMode(int x, int y, int z, bool entityUse) {
+	y = height - 1 - y;
 	if (!entityUse) {
 		if (x >= width || x < 0 || y >= height || y < 0 || z >= depth || z < 0 ) {
 			return -1;
@@ -326,6 +327,7 @@ int Map::getTileMode(int x, int y, int z, bool entityUse) {
  *	@param z - Y-position.
  */
 void Map::setTileMode(int x, int y, int z, bool state, bool entityUse) {
+	
 	if (!entityUse) {
 		if (x >= width || x < 0 || y >= height || y < 0 || z >= depth || z < 0) {
 			return;
@@ -336,8 +338,8 @@ void Map::setTileMode(int x, int y, int z, bool state, bool entityUse) {
 			return;
 		}
 	}
-	std::cout << depth * width * x + y * depth + z << std::endl;
-	t_types[depth * width * x + y * depth + z] = state;
+	int i = depth * width * x + y * depth + z;
+	t_types[i] = state;
 	//return getType()[y * width + x];
 }
 
@@ -354,7 +356,8 @@ double Map::getRandNum(int min, int max) {
 
 void Map::printAllTiles() {
 	for (int i = 0; i < t_types.size(); i++) {
-	t_types[i]
+		if (!(i % 5)) std::cout << "\n";
+		std::cout << t_types[i];
 	
 	}
 }
