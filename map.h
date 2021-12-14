@@ -43,8 +43,8 @@ private:
 	EBO*				t_EBO;
 	
 	std::vector<glm::vec4>  t_vertices;
-	std::vector<GLuint>  t_indices;
-	std::vector<GLuint>	t_types;
+	std::vector<GLuint>     t_indices;
+	std::vector<GLuint>	    t_types;
 
 	// map tiles
 	VAO* f_VAO;
@@ -85,6 +85,7 @@ glm::vec3
 
 
 
+	void setTileMode(int x, int y, int z, bool state = false, bool entityUse = true);
 	void setSpawn(glm::vec3 newPos)	{ spawnTile = newPos; }
 	void setGameStatus(bool mode = false) { this->gameOn = mode; }
 	std::pair<float, float> tileToCoords(float x, float y);

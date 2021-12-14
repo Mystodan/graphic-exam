@@ -36,9 +36,13 @@ Entity::~Entity() {
 Pacman::Pacman(Map* level, int speed/*=0.02f*/) : Entity(level) {
 	glm::vec3
 		Pos = map->tileToCoords(0, 0, level->getDepht()-1);
-	posX = Pos.x;
-	posY = Pos.y;
-	posZ = Pos.z;
+	spawnPosX = Pos.x;
+	spawnPosY = Pos.y;
+	spawnPosZ = Pos.z;
+	resetPos();
+
+
+
 	shader = new Shader("shaders/player.vert", "shaders/player.frag");
 	// Set player spawn
 	color = 3;
@@ -84,7 +88,11 @@ Ghost::Ghost( Map* level, Pacman* target, float colour/*=0.f*/, float speed/*=0.
 	std::cout << "Generating buffers for Ghost ..." << std::endl;
 	loadBuffers();
 };
-
+void Entity::resetPos() {
+	posX = spawnPosX;
+	posY = spawnPosY;
+	posZ = spawnPosZ;
+}
 /**
  *	Memory clean up on close
  */
@@ -188,9 +196,14 @@ int Entity::getTileMode(int x, int y) {
 	return map->getTileMode(x, y);
 };
 int Entity::getTileMode(int x, int y, int z) {
-
 	return map->getTileMode(x, y, z);
 };
+
+void Entity::setTileMode(int x, int y, int z) {
+	map->setTileMode(x, y, z);
+};
+
+
 int Entity::checkSolidBlock() {
 	// Gets and saves current tile
 	glm::vec3 tile = map->tileToCoords(posX, posY, posZ),
@@ -315,13 +328,18 @@ void Entity::move(GLFWwindow* window) {
 	if (checkFacingTile(newDir) || !singleStep) {
 		facing = newDir; speed = constSpeed; 
 	}
-	if (k_space) { posZ = 0.0001f; }
+	if (k_space) { posZ -= 0.1f; }
 	float tempSpeed = constSpeed/10;
 	if (!checkSolidBlock()) {
-		std::cout << checkSolidBlock() << "\n";
-		tempSpeed = 0; roundPos(1, 1, 1);
-	}
-	;
+		
+		tempSpeed = 0; roundPos(1, 1, 1); 
+		map->setTileMode(posX, posY, posZ+1);
+		
+		//setTileMode(posX,posY,posZ+1);
+
+		resetPos();
+	
+	};
 	
 	 //create solid block at z = 0
 

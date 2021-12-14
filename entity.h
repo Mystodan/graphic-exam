@@ -32,6 +32,9 @@ class Entity {
 		float					posX,
 								posY,
 								posZ,
+								spawnPosX,
+								spawnPosY,
+								spawnPosZ,
 								velX,
 								velY,
 								velZ,
@@ -64,11 +67,15 @@ class Entity {
 		void loadBuffers();
 		int  getTileMode(int x, int y);
 		int  getTileMode(int x, int y, int z);
+		void setTileMode(int x, int y, int z);
 		void move(GLFWwindow* window);
 		bool getIsAlive() { return this->isAlive; }
 		bool hasMoved() { return this->firstMove; }
-		std::chrono::steady_clock::time_point				turnCounter;
-		std::chrono::time_point<std::chrono::steady_clock>	endTurnTime;
+		void resetPos();
+		std::chrono::steady_clock::time_point				tp_Counter,
+															turnCounter;
+		std::chrono::time_point<std::chrono::steady_clock>	tp_turnTime,
+															endTurnTime;
 };
 
 

@@ -316,6 +316,32 @@ int Map::getTileMode(int x, int y, int z, bool entityUse) {
 	return getType()[depth * width * x + y * depth + z];
 	//return getType()[y * width + x];
 }
+
+/**
+ *	sets a tile mode, when called.
+ *	return -1 means out of bounds.
+ *
+ *  @param x - X-position.
+ *	@param y - Y-position.
+ *	@param z - Y-position.
+ */
+void Map::setTileMode(int x, int y, int z, bool state, bool entityUse) {
+	if (!entityUse) {
+		if (x >= width || x < 0 || y >= height || y < 0 || z >= depth || z < 0) {
+			return;
+		}
+	}
+	else {
+		if (x >= width || x < 0 || y >= height || y < 0 || z >= depth || z < 0) {
+			return;
+		}
+	}
+	std::cout << depth * width * x + y * depth + z << std::endl;
+	t_types[depth * width * x + y * depth + z] = state;
+	//return getType()[y * width + x];
+}
+
+
 double Map::getRandNum(int min, int max) {
 
 	// x is in [0,1[
@@ -326,7 +352,12 @@ double Map::getRandNum(int min, int max) {
 	return rand;
 }
 
-
+void Map::printAllTiles() {
+	for (int i = 0; i < t_types.size(); i++) {
+	t_types[i]
+	
+	}
+}
 
 
 

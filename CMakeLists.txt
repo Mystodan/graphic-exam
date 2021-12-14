@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(Pacman3D_group5)
+project(grafikk-eksamen)
 
 find_package(OpenGL REQUIRED)
 
