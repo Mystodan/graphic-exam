@@ -74,8 +74,8 @@ int main()
 
 
     Map*    level0 = new Map(5,5,10);
-
     Pacman* Player = new Pacman(level0);
+
     Shader* mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
 
     Camera* camera = new Camera(width, height, glm::vec3(level0->getWidth() / 2.f, level0->getHeight() / 2.f, level0->getDepht()*2.f));

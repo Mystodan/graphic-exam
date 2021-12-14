@@ -13,6 +13,9 @@
 #include "vbo.h"
 #include "shaderClass.h"
 
+#include "texture.h"
+#include "camera.h"
+#include "stb_image.h"
 
 
 /**

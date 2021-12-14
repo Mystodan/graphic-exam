@@ -27,6 +27,9 @@ add_executable(
 	vao.h
 	vbo.cpp
 	vbo.h
+	texture.h
+	texture.cpp
+	structs.h
 	shaderClass.cpp
 	shaderClass.h
 	stb_image_c.cpp

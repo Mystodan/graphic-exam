@@ -43,17 +43,26 @@ class Entity {
 								color;
 		direction				facing;
 		int						nextTileX,
-								nextTileY;
+								nextTileY,
+								blockCount = 0;
 		Map*					map;
 		Camera*					camera;
-		VAO*					vao;
-		VBO*					vbo;
-		EBO*					ebo;
+		VAO*					vao,
+		   *					b_vao;
+		VBO*					vbo,
+		   *					b_vbo;
+		EBO*					ebo,
+		   *					b_ebo;
 		std::vector<glm::vec4>  vertices;
+		std::vector<Vertex>		tex_vert;
 		std::vector<GLuint>		indices;
-		Shader*					shader;
+		std::vector<GLuint>		b_indices;
+		Shader*					shader,
+			  *	    			blockShader;
+		Texture*				blockTexture;
 		
 		Entity(Map* level);
+		Entity();
 		~Entity();
 		
 		std::pair<float, float> getPos() { return std::pair<float, float> { posX, posY }; }
@@ -72,6 +81,7 @@ class Entity {
 		bool getIsAlive() { return this->isAlive; }
 		bool hasMoved() { return this->firstMove; }
 		void resetPos();
+		void drawSolidBlock(float x, float y, float z, int i);
 		std::chrono::steady_clock::time_point				turnCounter;
 		std::chrono::time_point<std::chrono::steady_clock>	endTurnTime;
 };
@@ -104,6 +114,7 @@ private:
 
 public:
 	Ghost( Map* level, Pacman* target, float colour = 0.f, float speed = 0.02f );
+	Ghost();
 	~Ghost();
 };
 

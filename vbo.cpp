@@ -16,7 +16,14 @@ VBO::VBO(std::vector<GLfloat>&vertices) {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, getBytes(vertices), &vertices[0], GL_STATIC_DRAW);
 }
-
+/**
+ *	Constructor that generates a Vertex Buffer Object and links it to vertices
+ */
+VBO::VBO(std::vector<Vertex>& vertices) {
+	glGenBuffers(1, &ID);
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+	glBufferData(GL_ARRAY_BUFFER, getBytes(vertices), &vertices[0], GL_STATIC_DRAW);
+}
 /**
  *	Binds the VBO
  */
@@ -51,4 +58,11 @@ int VBO::getBytes(const std::vector<GLfloat>vertices) {
  */
 int VBO::getBytes(const std::vector<glm::vec4>vertices) {
 	return sizeof(std::vector<glm::vec4>) + sizeof(glm::vec4) * vertices.size();
+}
+/**
+ *	gets bytes of our data type
+ *	@return size - of vector
+ */
+int VBO::getBytes(const std::vector<Vertex>vertices) {
+	return sizeof(std::vector<Vertex>) + sizeof(Vertex) * vertices.size();
 }

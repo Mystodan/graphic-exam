@@ -4,6 +4,7 @@
 #include<glad/glad.h>
 #include "vbo.h"
 #include <iostream>
+#include "structs.h"
 
 class VAO {
 public:

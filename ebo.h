@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
-
+#include "structs.h"
 class EBO {
 private:
 	// Gets byte size

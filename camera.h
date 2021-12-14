@@ -13,14 +13,15 @@
 #include"camera.h"
 
 class Camera {
-private:
+public:
 	// Prevents the camera from jumping around when first clicking left click
 	bool				firstClick = true;
 
 	// Stores the main vectors of the camera
-	glm::vec3			Position,
+	glm::vec3			Position = glm::vec3(0.0f, 0.0f, 0.0f),
 						Orientation = glm::vec3(0.0f, 0.0f, -1.0f),
 						Up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::mat4			cameraMatrix = glm::mat4(1.0f);
 
 	// Stores the width and height of the window
 	int					width,
@@ -30,7 +31,7 @@ private:
 	float speed = 0.1f;
 	float sensitivity = 10.0f;
 
-public:
+
 	// Camera constructor to set up initial values
 	Camera(int			width,
 		int				height,
@@ -42,7 +43,7 @@ public:
 		float	farPlane, Shader& shader,
 		const char* uniform,
 		glm::mat4 transform = glm::mat4(1.f));
-
+	void Matrix(Shader* shader, const char* uniform);
 	// Handles camera inputs
 	void Inputs(GLFWwindow* window);
 };

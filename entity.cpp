@@ -18,6 +18,8 @@ Entity::Entity(Map* level) {
 	this->map = level;
 					// generating buffers for pacman
 };
+Entity::Entity() {
+};
 /**
  *	Deconstructor
  */
@@ -40,8 +42,6 @@ Pacman::Pacman(Map* level, int speed/*=0.02f*/) : Entity(level) {
 	spawnPosY = Pos.y;
 	spawnPosZ = Pos.z;
 	resetPos();
-
-
 
 	shader = new Shader("shaders/player.vert", "shaders/player.frag");
 	// Set player spawn
@@ -86,86 +86,67 @@ Ghost::Ghost( Map* level, Pacman* target, float colour/*=0.f*/, float speed/*=0.
 	velY = 0;
 	// remember to add texture and shit.
 	std::cout << "Generating buffers for Ghost ..." << std::endl;
-	loadBuffers();
+	loadBuffers(); // 0, 0, 0
 };
-void Entity::resetPos() {
-	posX = spawnPosX;
-	posY = spawnPosY;
-	posZ = spawnPosZ;
-}
+
+Ghost::Ghost() {
+};
 /**
  *	Memory clean up on close
  */
 Ghost::~Ghost() {
 	shader->Delete();
 };
+void Entity::resetPos() {
+	posX = spawnPosX;
+	posY = spawnPosY;
+	posZ = spawnPosZ;
+}
 
 /**
  *	Loads in pacMan verticies to make 1x1 tile and color
  *	Loads and links VAO, VBO and EBO
  */
 void Entity::loadBuffers() {
+	float x = 0,
+		  y = 0,
+		  z = 0;
+	// in xyz
+	// x + 0, x + 0, x + 0
+	// x + 1, y, z,
+	// x + 1, y, z + 1
+	vertices.push_back({ x,y,z,color });
+	vertices.push_back({ x+1,y,z,color });
+	vertices.push_back({ x+1,y,z+1,color });
+	vertices.push_back({ x,y,z+1,color });
+
+	vertices.push_back({ x+1,y,z,color });
+	vertices.push_back({ x+1,y,z+1,color });
+	vertices.push_back({ x+1,y+1,z+1,color });
+	vertices.push_back({ x+1,y+1,z,color });
+
+	vertices.push_back({ x,y,z,color });
+	vertices.push_back({ x,y,z+1,color });
+	vertices.push_back({ x,y+1,z+1,color });
+	vertices.push_back({ x,y+1,z,color });
+
+	vertices.push_back({ x,y+1,z,color });
+	vertices.push_back({ x+1,y+1,z,color });
+	vertices.push_back({ x+1,y+1,z+1,color });
+	vertices.push_back({ x,1,z+1,color });
+
+	for (int i = 0; i < 4; i++) {
+		indices.push_back(i * 4);
+		indices.push_back((i * 4) + 1);
+		indices.push_back((i * 4) + 1);
+		indices.push_back(i * 4 + 2);
+
+		indices.push_back((i * 4) + 2);
+		indices.push_back((i * 4) + 3);
+		indices.push_back((i * 4) + 3);
+		indices.push_back((i * 4));
 	
-	vertices.push_back({ 0,0,0,color });
-	vertices.push_back({ 1,0,0,color });
-	vertices.push_back({ 1,0,1,color });
-	vertices.push_back({ 0,0,1,color });
-
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(1);
-	indices.push_back(2);
-
-	indices.push_back(2);
-	indices.push_back(3);
-	indices.push_back(3);
-	indices.push_back(0);
-
-	vertices.push_back({ 1,0,0,color });
-	vertices.push_back({ 1,0,1,color });
-	vertices.push_back({ 1,1,1,color });
-	vertices.push_back({ 1,1,0,color });
-
-	indices.push_back(1 * 4);
-	indices.push_back((1 * 4) + 1);
-	indices.push_back((1 * 4) + 1);
-	indices.push_back(1* 4 + 2);
-
-	indices.push_back((1 * 4) + 2);
-	indices.push_back((1 * 4) + 3);
-	indices.push_back((1 * 4) + 3);
-	indices.push_back((1 * 4));
-
-	vertices.push_back({ 0,0,0,color });
-	vertices.push_back({ 0,0,1,color });
-	vertices.push_back({ 0,1,1,color });
-	vertices.push_back({ 0,1,0,color });
-
-	indices.push_back(2 * 4);
-	indices.push_back((2 * 4) + 1);
-	indices.push_back((2 * 4) + 1);
-	indices.push_back(2 * 4 + 2);
-
-	indices.push_back((2 * 4) + 2);
-	indices.push_back((2 * 4) + 3);
-	indices.push_back((2 * 4) + 3);
-	indices.push_back((2 * 4));
-
-	vertices.push_back({ 0,1,0,color });
-	vertices.push_back({ 1,1,0,color });
-	vertices.push_back({ 1,1,1,color });
-	vertices.push_back({ 0,1,1,color });
-
-	indices.push_back(3 * 4);
-	indices.push_back((3 * 4) + 1);
-	indices.push_back((3 * 4) + 1);
-	indices.push_back(3 * 4 + 2);
-
-	indices.push_back((3 * 4) + 2);
-	indices.push_back((3 * 4) + 3);
-	indices.push_back((3 * 4) + 3);
-	indices.push_back((3 * 4));
-
+	}
 
 	/* ---buffers--- */
 	// Generates Vertex Array Object and binds it
@@ -185,6 +166,85 @@ void Entity::loadBuffers() {
 	vao->Unbind();
 	vbo->Unbind();
 	ebo->Unbind();
+}
+
+/**
+ *	Loads in blocks verticies to make 1x1 tile and color
+ *	Loads and links VAO, VBO and EBO
+ */
+void Entity::drawSolidBlock(float x, float y, float z, int i) {
+	glm::vec3 vertice;
+	glm::vec3 normal;
+	glm::vec2 texCoord;
+
+	vertice = { x, y, z };
+	normal = { 1.f, 1.f, 1.f };
+	texCoord = { 0.f, 0.f };
+	tex_vert.push_back({ vertice, normal, texCoord });
+
+	vertice = { x + 1.f, y, z };
+	normal = { 1.f, 1.f, 1.f };
+	texCoord = { 0.f, 1.f };
+	tex_vert.push_back({ vertice, normal, texCoord });
+
+	vertice = { x + 1.f, y + 1.f, z };
+	normal = { 1.f, 1.f, 1.f };
+	texCoord = { 1.f, 1.f };
+	tex_vert.push_back({ vertice, normal, texCoord });
+
+	vertice = { x, y + 1.f, z };
+	normal = { 1.f, 1.f, 1.f };
+	texCoord = { 1.f, 0.f };
+	tex_vert.push_back({ vertice, normal, texCoord });
+	// in xyz
+	// x + 0, x + 0, x + 0
+	// x + 1, y, z,
+	// x + 1, y, z + 1
+	b_indices.push_back(i * 4);
+	b_indices.push_back((i * 4) + 1);
+	b_indices.push_back((i * 4) + 2);
+	b_indices.push_back(i * 4);
+	b_indices.push_back((i * 4) + 2);
+	b_indices.push_back((i * 4) + 3);
+	i++;
+
+	/* ---buffers--- */
+	// Generates Vertex Array Object and binds it
+	b_vao = new VAO();
+	b_vao->Bind();
+
+	// Generates Vertex Buffer Object and links it to vertices
+	b_vbo = new VBO(tex_vert);
+	// Generates Element Buffer Object and links it to indices
+	b_ebo = new EBO(b_indices);
+	blockShader = new Shader("shaders/tile.vert", "shaders/tile.frag");
+	blockTexture = new Texture("resources/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	blockTexture->texUnit(blockShader, "tex0", 0);
+
+
+	// Links VBO attributes such as coordinates and colors to VAO
+	b_vao->LinkAttrib(b_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	b_vao->LinkAttrib(b_vbo, 1, 1, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	// Unbind all to prevent accidentally modifying them
+	b_vao->Unbind();
+	b_vbo->Unbind();
+	b_ebo->Unbind();
+	
+	// Tells OpenGL which Shader Program we want to use
+	blockShader->Activate();
+	// Exports the camera Position to the Fragment Shader for specular lighting
+	glUniform3f(glGetUniformLocation(blockShader->ID, "camPos"), camera->Position.x, camera->Position.y, camera->Position.z);
+	// Export the camMatrix to the Vertex Shader of the pyramid
+	camera->Matrix(blockShader, "camMatrix");
+	// Binds texture so that is appears in rendering
+	blockTexture->Bind();
+	// Bind the VAO so OpenGL knows to use it
+	b_vao->Bind();
+	// Draw primitives, number of indices, datatype of indices, index of indices
+	glDrawElements(GL_TRIANGLES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * b_indices.size(), GL_UNSIGNED_INT, 0);
+
+
 }
 
 /**
@@ -334,13 +394,13 @@ void Entity::move(GLFWwindow* window) {
 		speed = 0;
 	}
 	if (k_space) { posZ -= 0.1f; }
-	float tempSpeed = constSpeed/10;
+	float tempSpeed = constSpeed/8;
 	if (!checkSolidBlock()) {
 		
 		tempSpeed = 0; roundPos(1, 1, 1); 
-		map->setTileMode(posX, posY, posZ);
-		//setTileMode(posX,posY,posZ+1);
 
+		map->setTileMode(posX, posY, posZ);
+		drawSolidBlock(posX, posY, posZ, blockCount);
 		resetPos();
 	
 	};
@@ -394,7 +454,7 @@ void Entity::move(GLFWwindow* window) {
 
 	if (!singleStep) {
 		endTurnTime = std::chrono::steady_clock::now();
-		if (std::chrono::duration_cast<std::chrono::milliseconds>(endTurnTime - turnCounter).count() > 0.2 * 1000.f) {
+		if (std::chrono::duration_cast<std::chrono::milliseconds>(endTurnTime - turnCounter).count() > 0.1 * 1000.f) {
 			singleStep = true;
 		}
 	}
@@ -442,7 +502,6 @@ void Ghost::updatePos() {
  */
 void Entity::updatePos() {
 	shader->Activate();
-	float size = 1.f;
 	glm::mat4 transform = glm::mat4(1.0f);
 	transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
 	transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
