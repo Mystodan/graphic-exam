@@ -57,46 +57,14 @@ PlayerBlock::~PlayerBlock() {
 	shader->Delete();
 };
 /**
- *	Creates a ghost, loads in initial values
- *	@param x - X-position.
- *	@param y - Y-position.
- *	@param level - link to level
- *	@param target - set entity target of who to eat
- *	@param colour - set the colour of the ghost
- *	@param speed - set the speed of the ghost
+ *	Takes the Player position and resets it
+ *	resets the position.
  */
-Ghost::Ghost( Map* level, PlayerBlock* target, float colour/*=0.f*/, float speed/*=0.02f*/) : Entity(level) {
-	shader = new Shader("shaders/ghost.vert", "shaders/ghost.frag");
-	Target = target;
-	color = colour;
-	constSpeed = speed;
-	
-	// sets facing of ghosts on startup
-	double startVal = 0, endVal = 1, randnum = getRandNum(startVal, endVal);
-	(randnum > startVal) ? facing = left : facing = right;
-	if (checkFacingTile(facing) == 1) { (randnum > startVal) ?  facing = down : facing = up;}
-
-	/*facing = venstre;
-	if (checkFacingTile(facing) == 1) {
-		facing = ned;
-	}*/
-	velX = 0;
-	velY = 0;
-	// remember to add texture and shit.
-	std::cout << "Generating buffers for Ghost ..." << std::endl;
-	loadBuffers(); // 0, 0, 0
-};
 void Entity::resetPos() {
 	posX = spawnPosX;
 	posY = spawnPosY;
 	posZ = spawnPosZ;
 }
-/**
- *	Memory clean up on close
- */
-Ghost::~Ghost() {
-	shader->Delete();
-};
 
 /**
  *	Loads in pacMan verticies to make 1x1 tile and color
@@ -167,7 +135,7 @@ void Entity::loadBuffers() {
  *	Loads in blocks verticies to make 1x1 tile and color
  *	Loads and links VAO, VBO and EBO
  */
-void Entity::createSolidBlocks(float x, float y, float z) {
+void Entity::createSolidBlocks() {
 		Block block(posX, posY, posZ);
 		map->blocks.push_back(block);
 }
@@ -198,10 +166,10 @@ int Entity::checkSolidBlock() {
 		tempMode2,
 		wall = -1;
 
-	tile.z -= 0.005f;
+	
 	tempTile.x = tile.x;
 	tempTile.y = tile.y;
-	tempTile.z = tile.z;
+	tempTile.z = tile.z - 1;
 	tempMode1 = getTileMode(floor(tile.x), floor(tile.y),floor(tile.z));
 	tempMode2 = getTileMode(floor(tempTile.x), floor(tempTile.y), floor(tempTile.z));
 
@@ -292,7 +260,7 @@ int Entity::checkFacingTile(direction facing) {
  *	and checks for collison.
  *	@param GLFW window
  */
-void Entity::move(GLFWwindow* window) {
+void PlayerBlock::move(GLFWwindow* window) {
 	dt = glfwGetTime();
 	//std::cout << posX << ", " << posY << ", " << posZ << std::endl;
 	// Get relevant keys
@@ -319,17 +287,23 @@ void Entity::move(GLFWwindow* window) {
 		speed = 0;
 	}
 
+	if (tpDelay) {
+		tp_eTT = std::chrono::steady_clock::now();
+		if (std::chrono::duration_cast<std::chrono::milliseconds>(tp_eTT - tp_Count).count() > 0.5 * 1000.f) {
+			if (k_space) {
+						posZ -= speed;
+						roundPos(1, 1, 1);
+			}
+			tpDelay = false;
+		}	
+	}
+	else {
+		if (k_space) {
+		posZ -= speed;
 	
-	if (k_space  ) {
-		if (posZ < 9 ) {
-			if (posZ > 8.94) {		
-			}
-			else {
-			posZ -= speed;
-			}
-		
 		}
 	}
+
 
 	 
 
@@ -341,11 +315,13 @@ void Entity::move(GLFWwindow* window) {
 		tempSpeed = 0; roundPos(1, 1, 1); 
 		if (posZ < 9) { //checks player pos
 		map->setTileMode(posX, posY, posZ); // creates solid blocks 
-		createSolidBlocks(0,0,0 );		
+		createSolidBlocks();		
 		}
 		else { //if player has a block bellow itself and its z = 9 or higher?? yeah you lose then
 			map->setGameStatus();// sets game to lose   
 		}
+		tp_Count = std::chrono::steady_clock::now();
+		tpDelay = true;
 		resetPos();
 	
 	}
@@ -364,7 +340,7 @@ void Entity::move(GLFWwindow* window) {
 	case left: {	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX -= speed; 
-			posZ -= tempSpeed * dt / reduceBy; 
+			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now(); 
 			singleStep = false;  
 			facing = none;  break;
@@ -373,7 +349,7 @@ void Entity::move(GLFWwindow* window) {
 	case right: {	
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX += speed;
-			posZ -= tempSpeed * dt / reduceBy;
+			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
@@ -382,7 +358,7 @@ void Entity::move(GLFWwindow* window) {
 	case up:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY += speed;
-			posZ -= tempSpeed * dt / reduceBy;
+			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none; break;
@@ -391,13 +367,13 @@ void Entity::move(GLFWwindow* window) {
 	case down:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY -= speed;
-			posZ -= tempSpeed * dt / reduceBy;
+			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
 		}
 	}
-	case none: posZ -= tempSpeed * dt / reduceBy; break;
+	case none: if (firstMove) { posZ -= tempSpeed * dt / reduceBy; } break;
 	}
 
 	if (!singleStep) {
@@ -416,7 +392,7 @@ void PlayerBlock::updatePos() {
 
 }
 
-double Ghost::getRandNum(int min, int max) {
+double Entity::getRandNum(int min, int max) {
 
 	// x is in [0,1[
 	double x = rand() / static_cast<double>(RAND_MAX + 1);
@@ -424,23 +400,6 @@ double Ghost::getRandNum(int min, int max) {
 	// [0,1[ * (max - min) + min is in [min,max[
 	double rand = min + static_cast<int>(x * (max - min));
 	return rand;
-}
-
-
-
-void Ghost::checkPac() {
-	std::pair<float, float> pacPos = Target->getPos();	
-	std::pair<float,float> ghostPos = map->coordsToTile(posX,posY);
-	if (round(pacPos.first) == round(ghostPos.first) && round(pacPos.second) == round(posY)) {
-		eatPac();
-	}
-}
-void Ghost::updatePos() {
-	Entity::updatePos();
-	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::translate(transform, glm::vec3(posX, posY, 0.0f));
-	transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
-	camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformGhost", transform);
 }
 
 

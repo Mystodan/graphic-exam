@@ -19,15 +19,12 @@
 
 
 enum direction {
-	left, right, up, down, none
+	left, right, up, down,depth, none
 };
 
 class Entity {
-	private:
-		bool				isAlive = true,
-							firstMove = false,
-							singleStep = false;
 	public:
+		bool					tpDelay = false;
 		double					dt;
 		float					posX,
 								posY,
@@ -35,9 +32,6 @@ class Entity {
 								spawnPosX,
 								spawnPosY,
 								spawnPosZ,
-								velX,
-								velY,
-								velZ,
 								speed,
 								constSpeed,
 								color;
@@ -46,16 +40,11 @@ class Entity {
 								nextTileY;
 		Map*					map;
 		Camera*					camera;
-		VAO*					vao,
-		   *  					b_vao;
-		VBO*					vbo,
-		   *					b_vbo;
-		EBO*					ebo,
-		   *					b_ebo;
-		std::vector<glm::vec4>  vertices,
-								b_vertices;
-		std::vector<GLuint>		indices,
-								b_indices;
+		VAO*					vao;
+		VBO*					vbo;
+		EBO*					ebo;
+		std::vector<glm::vec4>  vertices;
+		std::vector<GLuint>		indices;
 		Shader*					shader;
 		
 		Entity(Map* level);
@@ -64,7 +53,8 @@ class Entity {
 		std::pair<float, float> getPos() { return std::pair<float, float> { posX, posY }; }
 		void roundPos(bool x = false, bool y = false, bool z = false) { if (x) { posX = round(posX); } if (y) { posY = round(posY); } if (z) { posZ = round(posZ); } }
 		void setCamera(Camera* camera);
-		void setIsAlive(bool state = false) { this->isAlive = state; }
+		void setTileMode(int x, int y, int z);
+
 		int  checkFacingTile(direction facing);
 		int  checkSolidBlock();
 		void updatePos();
@@ -72,15 +62,15 @@ class Entity {
 		void loadBuffers();
 		int  getTileMode(int x, int y);
 		int  getTileMode(int x, int y, int z);
-		void setTileMode(int x, int y, int z);
-		void move(GLFWwindow* window);
-		bool getIsAlive() { return this->isAlive; }
-		bool hasMoved() { return this->firstMove; }
+		double  getRandNum(int min, int max);
+
 		void resetPos();
-		void createSolidBlocks(float x, float y, float z);
+		void createSolidBlocks();
 		void drawSolidBlocks();
-		std::chrono::steady_clock::time_point				turnCounter;
-		std::chrono::time_point<std::chrono::steady_clock>	endTurnTime;
+		std::chrono::steady_clock::time_point				tp_Count,
+															turnCounter;
+		std::chrono::time_point<std::chrono::steady_clock>	tp_eTT,
+															endTurnTime;
 };
 
 
@@ -90,28 +80,17 @@ class Entity {
  */
 class PlayerBlock : public Entity {
 private:
-	void updatePos();
+	bool	isAlive = true,
+			firstMove = false,
+			singleStep = false;
+	void	updatePos();
 public:
+	void setIsAlive(bool state = false) { this->isAlive = state; }
+	bool getIsAlive() { return this->isAlive; }
+	bool hasMoved() { return this->firstMove; }
+	void move(GLFWwindow* window);
 	PlayerBlock(Map* level, int speed = 1);
 	~PlayerBlock();
-};
-
-class Ghost : public Entity{
-
-private:
-	// player target
-	PlayerBlock*				Target;
-	std::vector<float>  vertices;
-	std::vector<GLuint> indices;
-	void updatePos();
-	void bounce();
-	double  getRandNum(int min, int max);
-	void checkPac();
-	void eatPac() { map->setGameStatus(); };
-
-public:
-	Ghost( Map* level, PlayerBlock* target, float colour = 0.f, float speed = 0.02f );
-	~Ghost();
 };
 
 
