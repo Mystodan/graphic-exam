@@ -20,7 +20,6 @@ void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shade
 	projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
 	// Exports the camera matrix and uniform matrix to the Vertex Shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view * transform));
-
 }
 void Camera::Matrix(Shader* shader, const char* uniform) {
 	// Exports camera matrix

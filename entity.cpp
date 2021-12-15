@@ -35,9 +35,9 @@ Entity::~Entity() {
  *	@param y - Y-position.
  *	@param level - link to level
  */
-Pacman::Pacman(Map* level, int speed/*=0.02f*/) : Entity(level) {
+PlayerBlock::PlayerBlock(Map* level, int speed/*=0.02f*/) : Entity(level) {
 	glm::vec3
-		Pos = map->tileToCoords(0, 0, level->getDepht()-1);
+		Pos = map->tileToCoords(level->getWidth()/2, level->getHeight()/2, level->getDepht()-1);
 	spawnPosX = Pos.x;
 	spawnPosY = Pos.y;
 	spawnPosZ = Pos.z;
@@ -55,7 +55,7 @@ Pacman::Pacman(Map* level, int speed/*=0.02f*/) : Entity(level) {
 /**
  *	Memory clean up on close
  */
-Pacman::~Pacman() {
+PlayerBlock::~PlayerBlock() {
 	shader->Delete();
 };
 /**
@@ -67,7 +67,7 @@ Pacman::~Pacman() {
  *	@param colour - set the colour of the ghost
  *	@param speed - set the speed of the ghost
  */
-Ghost::Ghost( Map* level, Pacman* target, float colour/*=0.f*/, float speed/*=0.02f*/) : Entity(level) {
+Ghost::Ghost( Map* level, PlayerBlock* target, float colour/*=0.f*/, float speed/*=0.02f*/) : Entity(level) {
 	shader = new Shader("shaders/ghost.vert", "shaders/ghost.frag");
 	Target = target;
 	color = colour;
@@ -172,7 +172,7 @@ void Entity::loadBuffers() {
  *	Loads in blocks verticies to make 1x1 tile and color
  *	Loads and links VAO, VBO and EBO
  */
-void Entity::drawSolidBlock(float x, float y, float z, int i) {
+void Entity::createSolidBlock(float x, float y, float z, int i) {
 	glm::vec3 vertice;
 	glm::vec3 normal;
 	glm::vec2 texCoord;
@@ -180,21 +180,25 @@ void Entity::drawSolidBlock(float x, float y, float z, int i) {
 	vertice = { x, y, z };
 	normal = { 1.f, 1.f, 1.f };
 	texCoord = { 0.f, 0.f };
+	l_vertices.push_back({ vertice, normal, texCoord });
 	tex_vert.push_back({ vertice, normal, texCoord });
 
 	vertice = { x + 1.f, y, z };
 	normal = { 1.f, 1.f, 1.f };
 	texCoord = { 0.f, 1.f };
+	l_vertices.push_back({ vertice, normal, texCoord });
 	tex_vert.push_back({ vertice, normal, texCoord });
 
 	vertice = { x + 1.f, y + 1.f, z };
 	normal = { 1.f, 1.f, 1.f };
 	texCoord = { 1.f, 1.f };
+	l_vertices.push_back({ vertice, normal, texCoord });
 	tex_vert.push_back({ vertice, normal, texCoord });
 
 	vertice = { x, y + 1.f, z };
 	normal = { 1.f, 1.f, 1.f };
 	texCoord = { 1.f, 0.f };
+	l_vertices.push_back({ vertice, normal, texCoord });
 	tex_vert.push_back({ vertice, normal, texCoord });
 	// in xyz
 	// x + 0, x + 0, x + 0
@@ -206,9 +210,36 @@ void Entity::drawSolidBlock(float x, float y, float z, int i) {
 	b_indices.push_back(i * 4);
 	b_indices.push_back((i * 4) + 2);
 	b_indices.push_back((i * 4) + 3);
+
+	l_indices.push_back(i * 4);
+	l_indices.push_back((i * 4) + 1);
+	l_indices.push_back((i * 4) + 2);
+	l_indices.push_back(i * 4);
+	l_indices.push_back((i * 4) + 2);
+	l_indices.push_back((i * 4) + 3);
 	i++;
 
+
+
+
+
+
 	/* ---buffers--- */
+
+	lightVAO = new VAO();
+	lightVAO->Bind();
+
+	lightVBO = new VBO(l_vertices);
+
+	lightEBO = new EBO(l_indices);
+	// Links VBO attributes such as coordinates and colors to VAO
+	lightVAO->LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+	// Unbind all to prevent accidentally modifying them
+	lightVAO->Unbind();
+	lightVBO->Unbind();
+	lightEBO->Unbind();
+
+
 	// Generates Vertex Array Object and binds it
 	b_vao = new VAO();
 	b_vao->Bind();
@@ -221,11 +252,12 @@ void Entity::drawSolidBlock(float x, float y, float z, int i) {
 	blockTexture = new Texture("resources/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	blockTexture->texUnit(blockShader, "tex0", 0);
 
+	lightShader = new Shader("shaders/tile.vert", "shaders/tile.frag");
 
 	// Links VBO attributes such as coordinates and colors to VAO
-	b_vao->LinkAttrib(b_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-	b_vao->LinkAttrib(b_vbo, 1, 1, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-
+	b_vao->LinkAttrib(b_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
+	b_vao->LinkAttrib(b_vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	b_vao->LinkAttrib(b_vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	b_vao->Unbind();
 	b_vbo->Unbind();
@@ -233,6 +265,7 @@ void Entity::drawSolidBlock(float x, float y, float z, int i) {
 	
 	// Tells OpenGL which Shader Program we want to use
 	blockShader->Activate();
+	b_ID = blockShader->ID;
 	// Exports the camera Position to the Fragment Shader for specular lighting
 	glUniform3f(glGetUniformLocation(blockShader->ID, "camPos"), camera->Position.x, camera->Position.y, camera->Position.z);
 	// Export the camMatrix to the Vertex Shader of the pyramid
@@ -243,7 +276,17 @@ void Entity::drawSolidBlock(float x, float y, float z, int i) {
 	b_vao->Bind();
 	// Draw primitives, number of indices, datatype of indices, index of indices
 	glDrawElements(GL_TRIANGLES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * b_indices.size(), GL_UNSIGNED_INT, 0);
+	// Tells OpenGL which Shader Program we want to use
+	lightShader->Activate();
+	l_ID = lightShader->ID;
+	// Export the camMatrix to the Vertex Shader of the light cube
+	camera->Matrix(lightShader, "camMatrix");
+	// Bind the VAO so OpenGL knows to use it
+	lightVAO->Bind();
+	// Draw primitives, number of indices, datatype of indices, index of indices;
+	glDrawElements(GL_TRIANGLES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * l_indices.size(), GL_UNSIGNED_INT, 0);
 
+	
 
 }
 
@@ -394,13 +437,12 @@ void Entity::move(GLFWwindow* window) {
 		speed = 0;
 	}
 	if (k_space) { posZ -= 0.1f; }
-	float tempSpeed = constSpeed/8;
+	float tempSpeed = constSpeed/6;
 	if (!checkSolidBlock()) {
-		
 		tempSpeed = 0; roundPos(1, 1, 1); 
 
 		map->setTileMode(posX, posY, posZ);
-		drawSolidBlock(posX, posY, posZ, blockCount);
+		createSolidBlock(posX, posY, posZ, blockCount);
 		resetPos();
 	
 	};
@@ -463,7 +505,7 @@ void Entity::move(GLFWwindow* window) {
 	Entity::updatePos();
 };
 
-void Pacman::updatePos() {
+void PlayerBlock::updatePos() {
 	Entity::updatePos();
 
 }
@@ -522,4 +564,17 @@ void Entity::draw() {
 	vao->Bind();
 	glLineWidth(2.f);
 	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * indices.size(), GL_UNSIGNED_INT, 0);
+	drawSolidBlock();
 }
+void Entity::drawSolidBlock() {
+	glm::vec4 lightColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);	// light color for textures
+	glm::vec3 lightPos = glm::vec3(map->getWidth(), map->getHeight(), 5.0f);
+	
+	glUseProgram(l_ID);
+	glUniform4f(glGetUniformLocation(l_ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUseProgram(b_ID);
+	glUniform4f(glGetUniformLocation(b_ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(b_ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+
+};

@@ -27,6 +27,16 @@ class Entity {
 		bool				isAlive = true,
 							firstMove = false,
 							singleStep = false;
+		// lights
+		VAO*				lightVAO;
+		VBO*				lightVBO;
+		EBO*				lightEBO;
+		Shader*				lightShader;
+		GLuint              l_ID;
+
+
+		std::vector<Vertex>	l_vertices;
+		std::vector<GLuint>	l_indices;
 	public:
 		double					dt;
 		float					posX,
@@ -59,6 +69,7 @@ class Entity {
 		std::vector<GLuint>		b_indices;
 		Shader*					shader,
 			  *	    			blockShader;
+		GLuint					b_ID;
 		Texture*				blockTexture;
 		
 		Entity(Map* level);
@@ -81,7 +92,8 @@ class Entity {
 		bool getIsAlive() { return this->isAlive; }
 		bool hasMoved() { return this->firstMove; }
 		void resetPos();
-		void drawSolidBlock(float x, float y, float z, int i);
+		void createSolidBlock(float x, float y, float z, int i);
+		void drawSolidBlock();
 		std::chrono::steady_clock::time_point				turnCounter;
 		std::chrono::time_point<std::chrono::steady_clock>	endTurnTime;
 };
@@ -91,21 +103,21 @@ class Entity {
 /**
  *
  */
-class Pacman : public Entity {
+class PlayerBlock : public Entity {
 private:
 	void updatePos();
 public:
-	Pacman(Map* level, int speed = 1);
-	~Pacman();
+	PlayerBlock(Map* level, int speed = 1);
+	~PlayerBlock();
 };
 
 class Ghost : public Entity{
 
 private:
 	// player target
-	Pacman*				Target;
-	std::vector<float>  vertices;
-	std::vector<GLuint> indices;
+	PlayerBlock*				Target;
+	std::vector<float>			vertices;
+	std::vector<GLuint>			indices;
 	void updatePos();
 	void bounce();
 	double  getRandNum(int min, int max);
@@ -113,7 +125,7 @@ private:
 	void eatPac() { map->setGameStatus(); };
 
 public:
-	Ghost( Map* level, Pacman* target, float colour = 0.f, float speed = 0.02f );
+	Ghost( Map* level, PlayerBlock* target, float colour = 0.f, float speed = 0.02f );
 	Ghost();
 	~Ghost();
 };
