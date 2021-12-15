@@ -41,7 +41,7 @@ PlayerBlock::PlayerBlock(Map* level, int speed/*=0.02f*/) : Entity(level) {
 	spawnPosZ = Pos.z;
 	resetPos();
 
-	shader = new Shader("shaders/player.vert", "shaders/player.frag");
+	shader = new Shader("shaders/playerBlock.vert", "shaders/playerBlock.frag");
 	// Set player spawn
 	color = 3;
 	constSpeed = speed;
@@ -168,22 +168,8 @@ void Entity::loadBuffers() {
  *	Loads and links VAO, VBO and EBO
  */
 void Entity::createSolidBlocks(float x, float y, float z) {
-	if (posZ < 9) {
-		Block block(posX, posY, posZ, color);
-
-
-		shader->Activate();
-		glm::mat4 transform = glm::mat4(1.0f);
-		transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
-		transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
-		camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformPac", transform);
-		for (auto& vert : block.b_vertices) {
-			vert = vert * transform;
-		}
+		Block block(posX, posY, posZ);
 		map->blocks.push_back(block);
-		std::cout << map->blocks.size() << "\n";
-	}
-	else return;
 }
 
 /**
@@ -310,11 +296,11 @@ void Entity::move(GLFWwindow* window) {
 	dt = glfwGetTime();
 	//std::cout << posX << ", " << posY << ", " << posZ << std::endl;
 	// Get relevant keys
-	bool				k_left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS,
-		k_right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS,
-		k_up = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS,
-		k_down = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS,
-		k_space = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+	bool k_left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS,
+		 k_right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS,
+		 k_up = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS,
+		 k_down = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS,
+		 k_space = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
 
 	// Check which direction the player wants to turn
 	direction newDir = (k_left ? left :
@@ -332,18 +318,40 @@ void Entity::move(GLFWwindow* window) {
 	if (checkFacingTile(newDir) == 0) {
 		speed = 0;
 	}
-	if (k_space) { posZ -= 0.1f; }
+
+	
+	if (k_space  ) {
+		if (posZ < 9 ) {
+			if (posZ > 8.94) {		
+			}
+			else {
+			posZ -= speed;
+			}
+		
+		}
+	}
+
+	 
+
+		
 	float tempSpeed = constSpeed/10;
 
 	if (!checkSolidBlock()) {
 		
 		tempSpeed = 0; roundPos(1, 1, 1); 
-
-		map->setTileMode(posX, posY, posZ);
-		createSolidBlocks(0,0,0 );
+		if (posZ < 9) { //checks player pos
+		map->setTileMode(posX, posY, posZ); // creates solid blocks 
+		createSolidBlocks(0,0,0 );		
+		}
+		else { //if player has a block bellow itself and its z = 9 or higher?? yeah you lose then
+			map->setGameStatus();// sets game to lose   
+		}
 		resetPos();
 	
-	};
+	}
+	else {
+	
+	}
 	
 	 //create solid block at z = 0
 
