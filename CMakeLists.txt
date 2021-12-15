@@ -14,9 +14,11 @@ add_subdirectory(external/glm)
 
 add_executable(
 	${PROJECT_NAME}
-	main.cpp
+	block.cpp
+	block.h
 	camera.cpp
 	camera.h
+	main.cpp
 	map.cpp
 	map.h
 	ebo.cpp

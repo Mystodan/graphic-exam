@@ -73,12 +73,12 @@ int main()
     glEnable(GL_MULTISAMPLE);
 
 
-    Map*    level0 = new Map(5,5,10);
-    PlayerBlock* Player = new PlayerBlock(level0);
+    Map*            level = new Map(5,5,10);
+    PlayerBlock*    Player = new PlayerBlock(level);
+    Shader*         mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
 
-    Shader* mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
-
-    Camera* camera = new Camera(width, height, glm::vec3(level0->getWidth() / 2.f, level0->getHeight() / 2.f, level0->getDepht()*2.f));
+    Camera* camera = new Camera(width, height, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
+   // level->setcamera(camera);
     Player->setCamera(camera);
 
 
@@ -105,7 +105,7 @@ int main()
         mapShader->Activate();
         camera->Matrix(45.0f, 0.1f, 100.0f, *mapShader, "camMatrix");
         
-        level0->draw(window);
+        level->draw(window);
 
         // draws Player
       
@@ -119,7 +119,7 @@ int main()
         // Take care of all GLFW events
         glfwPollEvents();
 
-        if (!level0->getGameStatus())
+        if (!level->getGameStatus())
         {
             break;
         }

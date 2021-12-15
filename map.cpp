@@ -28,9 +28,7 @@ Map::~Map() {
 	t_VBO->Delete();
 	t_EBO->Delete();
 
-	p_VAO->Delete();
-	p_VBO->Delete();
-	p_EBO->Delete();
+
 }
 
 

@@ -12,6 +12,7 @@
 #include "vao.h"
 #include "vbo.h"
 #include "shaderClass.h"
+#include "block.h"
 
 #include "texture.h"
 #include "camera.h"
@@ -23,6 +24,7 @@
  */
 class Map {
 private:
+	
 	unsigned int		width, 
 						height,
 						depth,
@@ -49,37 +51,20 @@ private:
 	std::vector<GLuint>     t_indices;
 	std::vector<GLuint>	    t_types;
 
-	// map tiles
-	VAO* f_VAO;
-	VBO* f_VBO;
-	EBO* f_EBO;
-
-	std::vector<float>  f_vertices;
-	std::vector<GLuint> f_indices;
-	std::vector<GLuint>	f_types;
-
-	// pellets
-	VAO*				p_VAO;
-	VBO*				p_VBO;
-	EBO*				p_EBO;
-
-	std::vector<int>	pelletID;
-	std::vector<bool>   hasPellet;
-	std::vector<float>	p_vertices;
-	std::vector<GLuint> p_indices;
 
 	
 
 
 public:
+	std::vector<Block>	    blocks;
 	std::vector<GLuint> getType() { return t_types; }
-	std::vector<bool> checkPellet() { return hasPellet; }
+
 	int  getGameStatus(){ return gameOn; }
 	int  getWidth()		{ return width; }
 	int  getHeight()	{ return height; }
 	int  getDepht()	{ return depth; }
-	int  getPelletAmount() { return gPellets; }
-	int  getPelletIndices() { return p_indices.size(); }
+
+
 	int  getTileMode(int x, int y, bool entityUse = true);
 	int  getTileMode(int x, int y, int z, bool entityUse = true);
 glm::vec3 

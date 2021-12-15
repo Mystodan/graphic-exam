@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "block.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -6,7 +7,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> 
 #include <math.h>
-
 /** 
  *	Creates an entity, loads in initial values
  *	@param x - X-position.
@@ -17,8 +17,6 @@ Entity::Entity(Map* level) {
 	std::cout << "Setting entity..." << std::endl;
 	this->map = level;
 					// generating buffers for pacman
-};
-Entity::Entity() {
 };
 /**
  *	Deconstructor
@@ -88,20 +86,17 @@ Ghost::Ghost( Map* level, PlayerBlock* target, float colour/*=0.f*/, float speed
 	std::cout << "Generating buffers for Ghost ..." << std::endl;
 	loadBuffers(); // 0, 0, 0
 };
-
-Ghost::Ghost() {
-};
+void Entity::resetPos() {
+	posX = spawnPosX;
+	posY = spawnPosY;
+	posZ = spawnPosZ;
+}
 /**
  *	Memory clean up on close
  */
 Ghost::~Ghost() {
 	shader->Delete();
 };
-void Entity::resetPos() {
-	posX = spawnPosX;
-	posY = spawnPosY;
-	posZ = spawnPosZ;
-}
 
 /**
  *	Loads in pacMan verticies to make 1x1 tile and color
@@ -172,121 +167,19 @@ void Entity::loadBuffers() {
  *	Loads in blocks verticies to make 1x1 tile and color
  *	Loads and links VAO, VBO and EBO
  */
-void Entity::createSolidBlock(float x, float y, float z, int i) {
-	glm::vec3 vertice;
-	glm::vec3 normal;
-	glm::vec2 texCoord;
-
-	vertice = { x, y, z };
-	normal = { 1.f, 1.f, 1.f };
-	texCoord = { 0.f, 0.f };
-	l_vertices.push_back({ vertice, normal, texCoord });
-	tex_vert.push_back({ vertice, normal, texCoord });
-
-	vertice = { x + 1.f, y, z };
-	normal = { 1.f, 1.f, 1.f };
-	texCoord = { 0.f, 1.f };
-	l_vertices.push_back({ vertice, normal, texCoord });
-	tex_vert.push_back({ vertice, normal, texCoord });
-
-	vertice = { x + 1.f, y + 1.f, z };
-	normal = { 1.f, 1.f, 1.f };
-	texCoord = { 1.f, 1.f };
-	l_vertices.push_back({ vertice, normal, texCoord });
-	tex_vert.push_back({ vertice, normal, texCoord });
-
-	vertice = { x, y + 1.f, z };
-	normal = { 1.f, 1.f, 1.f };
-	texCoord = { 1.f, 0.f };
-	l_vertices.push_back({ vertice, normal, texCoord });
-	tex_vert.push_back({ vertice, normal, texCoord });
-	// in xyz
-	// x + 0, x + 0, x + 0
-	// x + 1, y, z,
-	// x + 1, y, z + 1
-	b_indices.push_back(i * 4);
-	b_indices.push_back((i * 4) + 1);
-	b_indices.push_back((i * 4) + 2);
-	b_indices.push_back(i * 4);
-	b_indices.push_back((i * 4) + 2);
-	b_indices.push_back((i * 4) + 3);
-
-	l_indices.push_back(i * 4);
-	l_indices.push_back((i * 4) + 1);
-	l_indices.push_back((i * 4) + 2);
-	l_indices.push_back(i * 4);
-	l_indices.push_back((i * 4) + 2);
-	l_indices.push_back((i * 4) + 3);
-	i++;
-
-
-
-
-
-
-	/* ---buffers--- */
-
-	lightVAO = new VAO();
-	lightVAO->Bind();
-
-	lightVBO = new VBO(l_vertices);
-
-	lightEBO = new EBO(l_indices);
-	// Links VBO attributes such as coordinates and colors to VAO
-	lightVAO->LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-	// Unbind all to prevent accidentally modifying them
-	lightVAO->Unbind();
-	lightVBO->Unbind();
-	lightEBO->Unbind();
-
-
-	// Generates Vertex Array Object and binds it
-	b_vao = new VAO();
-	b_vao->Bind();
-
-	// Generates Vertex Buffer Object and links it to vertices
-	b_vbo = new VBO(tex_vert);
-	// Generates Element Buffer Object and links it to indices
-	b_ebo = new EBO(b_indices);
-	blockShader  = new Shader("shaders/tile.vert", "shaders/tile.frag");
-	blockTexture = new Texture("resources/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	blockTexture->texUnit(blockShader, "tex0", 0);
-	lightShader  = new Shader("shaders/tile.vert", "shaders/tile.frag");
-
-	// Links VBO attributes such as coordinates and colors to VAO
-	b_vao->LinkAttrib(b_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
-	b_vao->LinkAttrib(b_vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	b_vao->LinkAttrib(b_vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	// Unbind all to prevent accidentally modifying them
-	b_vao->Unbind();
-	b_vbo->Unbind();
-	b_ebo->Unbind();
-	
-	// Tells OpenGL which Shader Program we want to use
-	blockShader->Activate();
-	b_ID = blockShader->ID;
-	// Exports the camera Position to the Fragment Shader for specular lighting
-	glUniform3f(glGetUniformLocation(blockShader->ID, "camPos"), camera->Position.x, camera->Position.y, camera->Position.z);
-	// Export the camMatrix to the Vertex Shader of the pyramid
-	camera->Matrix(blockShader, "camMatrix");
-	// Binds texture so that is appears in rendering
-	blockTexture->Bind();
-	// Bind the VAO so OpenGL knows to use it
-	b_vao->Bind();
-	// Draw primitives, number of indices, datatype of indices, index of indices
-	glDrawElements(GL_TRIANGLES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * b_indices.size(), GL_UNSIGNED_INT, 0);
-	// Tells OpenGL which Shader Program we want to use
-	lightShader->Activate();
-	l_ID = lightShader->ID;
-	// Export the camMatrix to the Vertex Shader of the light cube
-	camera->Matrix(lightShader, "camMatrix");
-	// Bind the VAO so OpenGL knows to use it
-	lightVAO->Bind();
-	// Draw primitives, number of indices, datatype of indices, index of indices;
-	glDrawElements(GL_TRIANGLES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * l_indices.size(), GL_UNSIGNED_INT, 0);
-
+void Entity::createSolidBlocks(float x, float y, float z) {
+	Block block(x, y, z, color);
 	
 
+	shader->Activate();
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
+	transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
+	camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformPac", transform);
+	for (auto& vert : block.b_vertices) {
+		vert = vert * transform;
+	}
+	map->blocks.push_back(block);
 }
 
 /**
@@ -436,12 +329,15 @@ void Entity::move(GLFWwindow* window) {
 		speed = 0;
 	}
 	if (k_space) { posZ -= 0.1f; }
-	float tempSpeed = constSpeed/6;
+	float tempSpeed = constSpeed/10;
+
 	if (!checkSolidBlock()) {
+		
 		tempSpeed = 0; roundPos(1, 1, 1); 
 
 		map->setTileMode(posX, posY, posZ);
-		createSolidBlock(posX, posY, posZ, blockCount);
+		createSolidBlocks(0,0,0 );
+		drawSolidBlocks();
 		resetPos();
 	
 	};
@@ -563,17 +459,14 @@ void Entity::draw() {
 	vao->Bind();
 	glLineWidth(2.f);
 	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * indices.size(), GL_UNSIGNED_INT, 0);
-	drawSolidBlock();
+
 }
-void Entity::drawSolidBlock() {
-	glm::vec4 lightColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);	// light color for textures
-	glm::vec3 lightPos = glm::vec3(map->getWidth(), map->getHeight(), 5.0f);
+void Entity::drawSolidBlocks() {
+
+	for (auto& blocks : map->blocks) {
+		blocks.draw();
 	
-	glUseProgram(l_ID);
-	glUniform4f(glGetUniformLocation(l_ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUseProgram(b_ID);
-	glUniform4f(glGetUniformLocation(b_ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(b_ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	}
+	
 
-
-};
+}

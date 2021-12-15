@@ -27,16 +27,6 @@ class Entity {
 		bool				isAlive = true,
 							firstMove = false,
 							singleStep = false;
-		// lights
-		VAO*				lightVAO;
-		VBO*				lightVBO;
-		EBO*				lightEBO;
-		Shader*				lightShader;
-		GLuint              l_ID;
-
-
-		std::vector<Vertex>	l_vertices;
-		std::vector<GLuint>	l_indices;
 	public:
 		double					dt;
 		float					posX,
@@ -53,27 +43,22 @@ class Entity {
 								color;
 		direction				facing;
 		int						nextTileX,
-								nextTileY,
-								blockCount = 0;
+								nextTileY;
 		Map*					map;
 		Camera*					camera;
 		VAO*					vao,
-		   *					b_vao;
+		   *  					b_vao;
 		VBO*					vbo,
 		   *					b_vbo;
 		EBO*					ebo,
 		   *					b_ebo;
-		std::vector<glm::vec4>  vertices;
-		std::vector<Vertex>		tex_vert;
-		std::vector<GLuint>		indices;
-		std::vector<GLuint>		b_indices;
-		Shader*					shader,
-			  *	    			blockShader;
-		GLuint					b_ID;
-		Texture*				blockTexture;
+		std::vector<glm::vec4>  vertices,
+								b_vertices;
+		std::vector<GLuint>		indices,
+								b_indices;
+		Shader*					shader;
 		
 		Entity(Map* level);
-		Entity();
 		~Entity();
 		
 		std::pair<float, float> getPos() { return std::pair<float, float> { posX, posY }; }
@@ -92,8 +77,8 @@ class Entity {
 		bool getIsAlive() { return this->isAlive; }
 		bool hasMoved() { return this->firstMove; }
 		void resetPos();
-		void createSolidBlock(float x, float y, float z, int i);
-		void drawSolidBlock();
+		void createSolidBlocks(float x, float y, float z);
+		void drawSolidBlocks();
 		std::chrono::steady_clock::time_point				turnCounter;
 		std::chrono::time_point<std::chrono::steady_clock>	endTurnTime;
 };
@@ -116,8 +101,8 @@ class Ghost : public Entity{
 private:
 	// player target
 	PlayerBlock*				Target;
-	std::vector<float>			vertices;
-	std::vector<GLuint>			indices;
+	std::vector<float>  vertices;
+	std::vector<GLuint> indices;
 	void updatePos();
 	void bounce();
 	double  getRandNum(int min, int max);
@@ -126,7 +111,6 @@ private:
 
 public:
 	Ghost( Map* level, PlayerBlock* target, float colour = 0.f, float speed = 0.02f );
-	Ghost();
 	~Ghost();
 };
 
