@@ -48,7 +48,7 @@ int main()
     
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* screenMode = glfwGetVideoMode(monitor);
-    GLFWwindow* window = glfwCreateWindow(width * res, height * res, "Pacman", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width * res, height * res, "BlockOut", NULL, NULL);
 
     if (window == nullptr) {
         std::cerr << "GLFW failed on window creation." << '\n';

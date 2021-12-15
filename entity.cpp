@@ -16,7 +16,7 @@
 Entity::Entity(Map* level) {
 	std::cout << "Setting entity..." << std::endl;
 	this->map = level;
-					// generating buffers for pacman
+					// generating buffers for player
 };
 /**
  *	Deconstructor
@@ -28,7 +28,7 @@ Entity::~Entity() {
 };
 
 /**
- *	Creates a pacman, loads in initial values
+ *	Creates a player, loads in initial values
  *	@param x - X-position.
  *	@param y - Y-position.
  *	@param level - link to level
@@ -38,15 +38,15 @@ PlayerBlock::PlayerBlock(Map* level, int speed/*=0.02f*/) : Entity(level) {
 		Pos = map->tileToCoords(level->getWidth()/2, level->getHeight()/2, level->getDepht()-1);
 	spawnPosX = Pos.x;
 	spawnPosY = Pos.y;
-	spawnPosZ = Pos.z;
+	spawnPosZ = Pos.z+0.99;
 	resetPos();
-
+	gravityCounter = std::chrono::steady_clock::now();
 	shader = new Shader("shaders/playerBlock.vert", "shaders/playerBlock.frag");
 	// Set player spawn
 	color = 3;
 	constSpeed = speed;
 	// remember to add texture and shit.
-	std::cout << "Generating buffers for Pacman ..." << std::endl;
+	std::cout << "Generating buffers for player ..." << std::endl;
 	loadBuffers();
 };
 
@@ -67,13 +67,13 @@ void Entity::resetPos() {
 }
 
 /**
- *	Loads in pacMan verticies to make 1x1 tile and color
+ *	Loads in player verticies to make 1x1 tile and color
  *	Loads and links VAO, VBO and EBO
  */
 void Entity::loadBuffers() {
 	float x = 0,
 		  y = 0,
-		  z = 0;
+		  z = -1;
 	// in xyz
 	// x + 0, x + 0, x + 0
 	// x + 1, y, z,
@@ -137,15 +137,12 @@ void Entity::loadBuffers() {
  */
 void Entity::createSolidBlocks() {
 		Block block(posX, posY, posZ);
-
-	
-
 		map->blocks.push_back(block);
 }
 
 /**
  *	Gets tile mode and returns it
- *	@return tile mode (wall/tunnel/pacman)
+ *	@return tile mode (wall/tunnel/player)
  */
 int Entity::getTileMode(int x, int y) {
 
@@ -161,6 +158,7 @@ void Entity::setTileMode(int x, int y, int z) {
 
 
 int Entity::checkSolidBlock() {
+
 	// Gets and saves current tile
 	glm::vec3 tile = map->tileToCoords(posX, posY, posZ),
 		tempTile;
@@ -168,7 +166,7 @@ int Entity::checkSolidBlock() {
 	int tempMode1,
 		tempMode2,
 		wall = -1;
-	tile.z -= 0.1f;
+	tile.z -= 0.001f;
 	
 	tempTile.x = tile.x;
 	tempTile.y = tile.y;
@@ -197,12 +195,12 @@ int Entity::checkFacingTile(direction facing) {
 		tempMode2,
 		wall = -1;
 
-	// Pacman
+	// player
 	tile.x += 0.001; tile.y += 0.001;
 	// Update it with facing dir
 	switch (facing) {
 	case left: {
-		tile.x -= 0.005f;				// moves pacman along the x(.x) value
+		tile.x -= 0.005f;				// moves player along the x(.x) value
 		
 		tempTile.x = tile.x; 			// checks tile to the left
 		tempTile.y = tile.y + 0.99f;
@@ -216,7 +214,7 @@ int Entity::checkFacingTile(direction facing) {
 		break; }
 
 	case right: {
-		tile.x += 1.005f;					// moves pacman along the x(.x) value
+		tile.x += 1.005f;					// moves player along the x(.x) value
 		
 		tempTile.x = tile.x;			// checks tile to the right
 		tempTile.y = tile.y + 0.99f;
@@ -230,7 +228,7 @@ int Entity::checkFacingTile(direction facing) {
 		break; }
 
 	case up: {
-		tile.y -= 0.005f;					// moves pacman along the x(.x) value
+		tile.y -= 0.005f;					// moves player along the x(.x) value
 		
 		tempTile.x = tile.x + 0.99f;   // checks tile above
 		tempTile.y = tile.y;
@@ -243,7 +241,7 @@ int Entity::checkFacingTile(direction facing) {
 		break; }
 
 	case down: {
-		tile.y += 1.005f;  // moves pacman along the x(.x) value
+		tile.y += 1.005f;  // moves player along the x(.x) value
 		
 		tempTile.x = tile.x + 0.99f;    // checks tile under
 		tempTile.y = tile.y;
@@ -259,7 +257,7 @@ int Entity::checkFacingTile(direction facing) {
 };
 
 /**
- *	Moves pacman based on player input,
+ *	Moves player based on player input,
  *	and checks for collison.
  *	@param GLFW window
  */
@@ -307,7 +305,15 @@ void PlayerBlock::move(GLFWwindow* window) {
 		}
 	}
 
-
+	if (firstMove) {
+		
+		gravityTT = std::chrono::steady_clock::now();
+		if (std::chrono::duration_cast<std::chrono::seconds>(gravityTT - gravityCounter).count() >= 3) {
+			gravityCounter = std::chrono::steady_clock::now();
+			posZ -= 1;
+			roundPos(1, 1, 1);
+		}
+	}
 	 
 
 		
@@ -316,17 +322,18 @@ void PlayerBlock::move(GLFWwindow* window) {
 	if (!checkSolidBlock()) {
 		
 		tempSpeed = 0; roundPos(1, 1, 1); 
-		if (posZ < 9) { //checks player pos
+		if (posZ < 8.8f) { //checks player pos
 		map->setTileMode(posX, posY, posZ); // creates solid blocks 
 		createSolidBlocks();	
-
 		}
-		else { //if player has a block bellow itself and its z = 9 or higher?? yeah you lose then
+
+		else if(posZ > 8.1f) { //if player has a block bellow itself and its z = 9 or higher?? yeah you lose then
 			map->setGameStatus();// sets game to lose   
 		}
-		resetPos();
+		
 		tp_Count = std::chrono::steady_clock::now();
 		tpDelay = true;
+		resetPos();
 	
 	}
 	else {
@@ -344,7 +351,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case left: {	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX -= speed; 
-			if (firstMove) { posZ -= 1 * dt / reduceBy; }
+		
 			turnCounter = std::chrono::steady_clock::now(); 
 			singleStep = false;  
 			facing = none;  break;
@@ -353,7 +360,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case right: {	
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX += speed;
-			if (firstMove) { posZ -= 1 * dt / reduceBy; }
+			
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
@@ -362,7 +369,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case up:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY += speed;
-			if (firstMove) { posZ -= 1 * dt / reduceBy; }
+		
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none; break;
@@ -371,23 +378,23 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case down:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY -= speed;
-			if (firstMove) { posZ -= 1 * dt / reduceBy; }
+		
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
 		}
 	}
-	case none: if (firstMove) { posZ -= 1 * dt / reduceBy; } break;
 	}
 
 	if (!singleStep) {
+		
 		endTurnTime = std::chrono::steady_clock::now();
 		if (std::chrono::duration_cast<std::chrono::milliseconds>(endTurnTime - turnCounter).count() > 0.1 * 1000.f) {
 			singleStep = true;
 		}
 	}
 
-	// Updates pacman position
+	// Updates player position
 	Entity::updatePos();
 };
 
@@ -408,8 +415,8 @@ double Entity::getRandNum(int min, int max) {
 
 
 /**
- *	Updates Pacman posistion when called
- *	Transforms Pacman posistion
+ *	Updates player posistion when called
+ *	Transforms player posistion
  */
 void Entity::updatePos() {
 	shader->Activate();
@@ -417,7 +424,6 @@ void Entity::updatePos() {
 	transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
 	transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
 	camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformPac", transform);
-	std::cout << posZ << "\n";
 };
 
 /**
@@ -428,7 +434,7 @@ void Entity::setCamera(Camera* camera) {
 };
 
 /**
- *	Draws pacman on screen
+ *	Draws player on screen
  */
 void Entity::draw() {
 	vao->Bind();

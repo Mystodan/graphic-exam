@@ -24,9 +24,9 @@ Map::Map(int width, int height, int depth) {
  * Cleans up memory when application closes
  */
 Map::~Map() {
-	g_VAO->Delete();
-	g_VBO->Delete();
-	g_EBO->Delete();
+	t_VAO->Delete();
+	t_VBO->Delete();
+	t_EBO->Delete();
 
 
 }
@@ -60,22 +60,22 @@ void Map::loadBuffers() {
 
 	/* --- Tile buffers */
 	// Generates Vertex Array Object and binds it
-	g_VAO = new VAO();
-	g_VAO->Bind();
+	t_VAO = new VAO();
+	t_VAO->Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	g_VBO = new VBO(grid_Vert);
+	t_VBO = new VBO(grid_Vert);
 	// Generates Element Buffer Object and links it to indices
-	g_EBO = new EBO(grid_Ind);
+	t_EBO = new EBO(grid_Ind);
 
 	// Links VBO attributes such as coordinates and colors to VAO
-	g_VAO->LinkAttrib(g_VBO, 0, 3, GL_FLOAT, 4 * sizeof(float), (void*)0);
-	g_VAO->LinkAttrib(g_VBO, 1, 1, GL_FLOAT, 4 * sizeof(float), (void*)(3 * sizeof(float)));
+	t_VAO->LinkAttrib(t_VBO, 0, 3, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	t_VAO->LinkAttrib(t_VBO, 1, 1, GL_FLOAT, 4 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	// Unbind all to prevent accidentally modifying them
-	g_VAO->Unbind();
-	g_VBO->Unbind();
-	g_EBO->Unbind();
+	t_VAO->Unbind();
+	t_VBO->Unbind();
+	t_EBO->Unbind();
 
 
 	std::cout << "Done generating buffers." << std::endl;
@@ -149,7 +149,7 @@ std::pair<int, int>	Map::coordsToTile(float x, float y) {
 }
 
 /**
- *	Changes pellet mode when pacman eats it,
+ *	Changes pellet mode when player eats it,
  *	and color changes to black.
  *
  *	@param x - X-position.
@@ -366,7 +366,7 @@ void Map::printAllTiles() {
  *	Draws tiles on screen.
  */
 void Map::tileDraw() {
-	g_VAO->Bind();
+	t_VAO->Bind();
 	glLineWidth(1.f);
 	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * grid_Ind.size(), GL_UNSIGNED_INT, 0);
 }

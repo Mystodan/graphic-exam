@@ -1,5 +1,5 @@
-#ifndef PACMAN_H
-#define PACMAN_H
+#ifndef player_H
+#define player_H
 
 #include <iostream>
 #include <vector>
@@ -68,9 +68,11 @@ class Entity {
 		void createSolidBlocks();
 		void drawSolidBlocks();
 		std::chrono::steady_clock::time_point				tp_Count,
-															turnCounter;
+															turnCounter,
+															gravityCounter;
 		std::chrono::time_point<std::chrono::steady_clock>	tp_eTT,
-															endTurnTime;
+															endTurnTime,
+															gravityTT;
 };
 
 
