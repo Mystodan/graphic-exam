@@ -28,7 +28,7 @@ VBO::VBO(std::vector<blockVertex>& vertices) {
  *	Binds the VBO
  */
 void VBO::Bind() {
-	glBindBuffer(GL_ARRAY_BUFFER, ID);
+ 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
 /**

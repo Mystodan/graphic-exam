@@ -320,15 +320,13 @@ void PlayerBlock::move(GLFWwindow* window) {
 		map->setTileMode(posX, posY, posZ); // creates solid blocks 
 		createSolidBlocks();	
 
-
-
 		}
 		else { //if player has a block bellow itself and its z = 9 or higher?? yeah you lose then
 			map->setGameStatus();// sets game to lose   
 		}
+		resetPos();
 		tp_Count = std::chrono::steady_clock::now();
 		tpDelay = true;
-		resetPos();
 	
 	}
 	else {
@@ -346,7 +344,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case left: {	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX -= speed; 
-			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
+			if (firstMove) { posZ -= 1 * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now(); 
 			singleStep = false;  
 			facing = none;  break;
@@ -355,7 +353,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case right: {	
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX += speed;
-			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
+			if (firstMove) { posZ -= 1 * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
@@ -364,7 +362,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case up:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY += speed;
-			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
+			if (firstMove) { posZ -= 1 * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none; break;
@@ -373,13 +371,13 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case down:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY -= speed;
-			if (firstMove) { posZ -= tempSpeed * dt / reduceBy; }
+			if (firstMove) { posZ -= 1 * dt / reduceBy; }
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
 		}
 	}
-	case none: if (firstMove) { posZ -= tempSpeed * dt / reduceBy; } break;
+	case none: if (firstMove) { posZ -= 1 * dt / reduceBy; } break;
 	}
 
 	if (!singleStep) {

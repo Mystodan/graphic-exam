@@ -5,8 +5,13 @@ layout (location = 0) in vec3 aPos;
 // Colors
 layout (location = 1) in float aMode;
 
+layout (location = 2) in vec2 inTextCoords;
+
 // Outputs the color for the Fragment Shader
 out vec3 color;
+
+out vec2 textCoords;
+
 
 // Imports the camera matrix from the main function
 uniform mat4 camMatrix;
@@ -15,6 +20,8 @@ uniform mat4 camMatrix;
 
 
 void main() {
+	textCoords = inTextCoords;
+
 	// Outputs the positions/coordinates of all vertices
 	gl_Position = camMatrix * vec4(aPos, 1.0);
 	

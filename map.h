@@ -43,12 +43,12 @@ private:
 
 
 	// map tiles
-	VAO*				t_VAO;
-	VBO*				t_VBO;
-	EBO*				t_EBO;
+	VAO*				g_VAO;
+	VBO*				g_VBO;
+	EBO*				g_EBO;
 	
-	std::vector<glm::vec4>  t_vertices;
-	std::vector<GLuint>     t_indices;
+	std::vector<glm::vec4>  grid_Vert;
+	std::vector<GLuint>     grid_Ind;
 	std::vector<GLuint>	    t_types;
 
 

@@ -24,9 +24,9 @@ Map::Map(int width, int height, int depth) {
  * Cleans up memory when application closes
  */
 Map::~Map() {
-	t_VAO->Delete();
-	t_VBO->Delete();
-	t_EBO->Delete();
+	g_VAO->Delete();
+	g_VBO->Delete();
+	g_EBO->Delete();
 
 
 }
@@ -60,22 +60,22 @@ void Map::loadBuffers() {
 
 	/* --- Tile buffers */
 	// Generates Vertex Array Object and binds it
-	t_VAO = new VAO();
-	t_VAO->Bind();
+	g_VAO = new VAO();
+	g_VAO->Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	t_VBO = new VBO(t_vertices);
+	g_VBO = new VBO(grid_Vert);
 	// Generates Element Buffer Object and links it to indices
-	t_EBO = new EBO(t_indices);
+	g_EBO = new EBO(grid_Ind);
 
 	// Links VBO attributes such as coordinates and colors to VAO
-	t_VAO->LinkAttrib(t_VBO, 0, 3, GL_FLOAT, 4 * sizeof(float), (void*)0);
-	t_VAO->LinkAttrib(t_VBO, 1, 1, GL_FLOAT, 4 * sizeof(float), (void*)(3 * sizeof(float)));
+	g_VAO->LinkAttrib(g_VBO, 0, 3, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	g_VAO->LinkAttrib(g_VBO, 1, 1, GL_FLOAT, 4 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	// Unbind all to prevent accidentally modifying them
-	t_VAO->Unbind();
-	t_VBO->Unbind();
-	t_EBO->Unbind();
+	g_VAO->Unbind();
+	g_VBO->Unbind();
+	g_EBO->Unbind();
 
 
 	std::cout << "Done generating buffers." << std::endl;
@@ -173,96 +173,96 @@ void Map::pushTile(float x1, float y1, float z1 ,float mode, int& i, float size/
 	else temp = 1.f;
 
 	// Bottom left 1
-	t_vertices.push_back({ tilePos.x, tilePos.y , temp , mode});
+	grid_Vert.push_back({ tilePos.x, tilePos.y , temp , mode});
 	// Bottom right 1
-	t_vertices.push_back({ tilePos.x + size ,tilePos.y ,temp, mode });
+	grid_Vert.push_back({ tilePos.x + size ,tilePos.y ,temp, mode });
 	// Top right 1
-	t_vertices.push_back({ tilePos.x + size, tilePos.y + size , temp, mode });
+	grid_Vert.push_back({ tilePos.x + size, tilePos.y + size , temp, mode });
 	// Top left 
-	t_vertices.push_back({ tilePos.x , tilePos.y + size, temp, mode });
+	grid_Vert.push_back({ tilePos.x , tilePos.y + size, temp, mode });
 	// Push back indices
-	t_indices.push_back(i * 4);
-	t_indices.push_back((i * 4) + 1);
-	t_indices.push_back((i * 4) + 1);
-	t_indices.push_back(i * 4   + 2);
+	grid_Ind.push_back(i * 4);
+	grid_Ind.push_back((i * 4) + 1);
+	grid_Ind.push_back((i * 4) + 1);
+	grid_Ind.push_back(i * 4   + 2);
 
-	t_indices.push_back((i * 4) + 2);
-	t_indices.push_back((i * 4) + 3);
-	t_indices.push_back((i * 4) + 3);
-	t_indices.push_back((i * 4));
+	grid_Ind.push_back((i * 4) + 2);
+	grid_Ind.push_back((i * 4) + 3);
+	grid_Ind.push_back((i * 4) + 3);
+	grid_Ind.push_back((i * 4));
 	i++;
 
 	if (tileTypE != 1 && tileTyp != 0) { 	// EAST
 		// t_vertices.push_back({ , , , mode });
-		t_vertices.push_back({ tilePos.x,tilePos.y ,tilePos.z , mode });
-		t_vertices.push_back({ tilePos.x,tilePos.y ,tilePos.z + size , mode });
-		t_vertices.push_back({ tilePos.x,tilePos.y + size ,tilePos.z + size, mode });
-		t_vertices.push_back({ tilePos.x,tilePos.y + size ,tilePos.z , mode });
+		grid_Vert.push_back({ tilePos.x,tilePos.y ,tilePos.z , mode });
+		grid_Vert.push_back({ tilePos.x,tilePos.y ,tilePos.z + size , mode });
+		grid_Vert.push_back({ tilePos.x,tilePos.y + size ,tilePos.z + size, mode });
+		grid_Vert.push_back({ tilePos.x,tilePos.y + size ,tilePos.z , mode });
 
 
 		// Push back indices
-		t_indices.push_back(i * 4);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back(i * 4 + 2);
+		grid_Ind.push_back(i * 4);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back(i * 4 + 2);
 
 		i++;
 	}
 	if (tileTypW != 1 && tileTyp != 0) { // WEST
-		t_vertices.push_back({ tilePos.x + size, tilePos.y,tilePos.z , mode }); // WEST left 3
-		t_vertices.push_back({ tilePos.x + size, tilePos.y,tilePos.z + size , mode });	// WEST right 3
-		t_vertices.push_back({ tilePos.x + size, tilePos.y + size, tilePos.z + size, mode }); 	// WEST right 3
-		t_vertices.push_back({ tilePos.x + size,tilePos.y + size ,tilePos.z , mode }); // WEST left 3
+		grid_Vert.push_back({ tilePos.x + size, tilePos.y,tilePos.z , mode }); // WEST left 3
+		grid_Vert.push_back({ tilePos.x + size, tilePos.y,tilePos.z + size , mode });	// WEST right 3
+		grid_Vert.push_back({ tilePos.x + size, tilePos.y + size, tilePos.z + size, mode }); 	// WEST right 3
+		grid_Vert.push_back({ tilePos.x + size,tilePos.y + size ,tilePos.z , mode }); // WEST left 3
 
 		// Push back indices
-		t_indices.push_back(i * 4);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back(i * 4 + 2);
+		grid_Ind.push_back(i * 4);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back(i * 4 + 2);
 
 	
 		i++;
 	}
 	if (tileTypN != 1 && tileTyp != 0) { // BOTTOM
-		t_vertices.push_back({ tilePos.x,tilePos.y ,tilePos.z , mode }); // left 4
-		t_vertices.push_back({ tilePos.x + size, tilePos.y, tilePos.z, mode }); // right 4
+		grid_Vert.push_back({ tilePos.x,tilePos.y ,tilePos.z , mode }); // left 4
+		grid_Vert.push_back({ tilePos.x + size, tilePos.y, tilePos.z, mode }); // right 4
 
 		// Top
-		t_vertices.push_back({ tilePos.x + size, tilePos.y,tilePos.z + size , mode }); //  right 4
-		t_vertices.push_back({ tilePos.x, tilePos.y,tilePos.z + size, mode }); // left 4
+		grid_Vert.push_back({ tilePos.x + size, tilePos.y,tilePos.z + size , mode }); //  right 4
+		grid_Vert.push_back({ tilePos.x, tilePos.y,tilePos.z + size, mode }); // left 4
 
 		// Push back indices
-		t_indices.push_back(i * 4);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back(i * 4 + 2);
+		grid_Ind.push_back(i * 4);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back(i * 4 + 2);
 
-		t_indices.push_back((i * 4) + 2);
-		t_indices.push_back((i * 4) + 3);
-		t_indices.push_back((i * 4) + 3);
-		t_indices.push_back((i * 4));
+		grid_Ind.push_back((i * 4) + 2);
+		grid_Ind.push_back((i * 4) + 3);
+		grid_Ind.push_back((i * 4) + 3);
+		grid_Ind.push_back((i * 4));
 		i++;
 	}
 	if (tileTypS != 1 && tileTyp != 0) {
 		// Bottom left 5
-		t_vertices.push_back({ tilePos.x, tilePos.y + size,tilePos.z , mode });
+		grid_Vert.push_back({ tilePos.x, tilePos.y + size,tilePos.z , mode });
 		// Bottom right 5
-		t_vertices.push_back({ tilePos.x + size ,tilePos.y + size ,tilePos.z , mode });
+		grid_Vert.push_back({ tilePos.x + size ,tilePos.y + size ,tilePos.z , mode });
 		// Top right 5
-		t_vertices.push_back({ tilePos.x + size,tilePos.y + size ,tilePos.z + size , mode });
+		grid_Vert.push_back({ tilePos.x + size,tilePos.y + size ,tilePos.z + size , mode });
 		// Top left 5
-		t_vertices.push_back({ tilePos.x ,tilePos.y + size ,tilePos.z + size , mode });
+		grid_Vert.push_back({ tilePos.x ,tilePos.y + size ,tilePos.z + size , mode });
 
 
 		// Push back indices
-		t_indices.push_back(i * 4);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back((i * 4) + 1);
-		t_indices.push_back(i * 4 + 2);
-		t_indices.push_back((i * 4) + 2);
-		t_indices.push_back((i * 4) + 3);
-		t_indices.push_back((i * 4) + 3);
-		t_indices.push_back((i * 4));
+		grid_Ind.push_back(i * 4);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back((i * 4) + 1);
+		grid_Ind.push_back(i * 4 + 2);
+		grid_Ind.push_back((i * 4) + 2);
+		grid_Ind.push_back((i * 4) + 3);
+		grid_Ind.push_back((i * 4) + 3);
+		grid_Ind.push_back((i * 4));
 		i++;
 	}
 }
@@ -366,9 +366,9 @@ void Map::printAllTiles() {
  *	Draws tiles on screen.
  */
 void Map::tileDraw() {
-	t_VAO->Bind();
+	g_VAO->Bind();
 	glLineWidth(1.f);
-	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * t_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * grid_Ind.size(), GL_UNSIGNED_INT, 0);
 }
 
 /**

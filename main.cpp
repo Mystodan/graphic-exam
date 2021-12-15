@@ -69,6 +69,8 @@ int main()
 	}
     // Enable depht buffer 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // Enable MSAA
     glEnable(GL_MULTISAMPLE);
 
@@ -80,11 +82,9 @@ int main()
     Camera* camera = new Camera(width, height, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
    // level->setcamera(camera);
     Player->setCamera(camera);
+    // Specify the color of the background
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-
-    
-  
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     while (!glfwWindowShouldClose(window))
     {
         // Scale with aspect ratio
@@ -93,8 +93,7 @@ int main()
         glViewport(0, 0, tempwidth, tempheight);
         glfwSetWindowAspectRatio(window, screenMode->height, screenMode->height);
 
-        // Specify the color of the background
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      
         // Clean the back buffer and depth buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Tell OpenGL which Shader Program we want to use
