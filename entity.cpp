@@ -248,11 +248,10 @@ void Entity::createSolidBlock(float x, float y, float z, int i) {
 	b_vbo = new VBO(tex_vert);
 	// Generates Element Buffer Object and links it to indices
 	b_ebo = new EBO(b_indices);
-	blockShader = new Shader("shaders/tile.vert", "shaders/tile.frag");
+	blockShader  = new Shader("shaders/tile.vert", "shaders/tile.frag");
 	blockTexture = new Texture("resources/textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	blockTexture->texUnit(blockShader, "tex0", 0);
-
-	lightShader = new Shader("shaders/tile.vert", "shaders/tile.frag");
+	lightShader  = new Shader("shaders/tile.vert", "shaders/tile.frag");
 
 	// Links VBO attributes such as coordinates and colors to VAO
 	b_vao->LinkAttrib(b_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*) 0);
