@@ -7,6 +7,8 @@ struct Vertex {
 	glm::vec2 texCoords;
 };
 
-struct pVertex {
-	glm::vec4 pelletVertices;
+struct blockVertex {
+	glm::vec3 vertPos;
+	float color;
+	glm::vec2 texCoords;
 };

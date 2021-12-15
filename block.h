@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "structs.h"
+#include "texture.h"
 #include "camera.h"
 #include "shaderClass.h"
 #include "vao.h"
@@ -78,6 +79,7 @@ public:
 		/* ---buffers--- */
 // Generates Vertex Array Object and binds it
 		BlockShader = new Shader("shaders/solidBlock.vert", "shaders/solidBlock.frag");
+
 		vao = new VAO();
 		vao->Bind();
 
@@ -110,6 +112,7 @@ public:
     std::vector<GLuint> b_indices;
 
 private:
+	Texture* BlockTexture;
     Shader* BlockShader;
     VBO* vbo;
     VAO* vao;

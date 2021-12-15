@@ -137,6 +137,9 @@ void Entity::loadBuffers() {
  */
 void Entity::createSolidBlocks() {
 		Block block(posX, posY, posZ);
+
+	
+
 		map->blocks.push_back(block);
 }
 
@@ -165,7 +168,7 @@ int Entity::checkSolidBlock() {
 	int tempMode1,
 		tempMode2,
 		wall = -1;
-
+	tile.z -= 0.1f;
 	
 	tempTile.x = tile.x;
 	tempTile.y = tile.y;
@@ -315,7 +318,10 @@ void PlayerBlock::move(GLFWwindow* window) {
 		tempSpeed = 0; roundPos(1, 1, 1); 
 		if (posZ < 9) { //checks player pos
 		map->setTileMode(posX, posY, posZ); // creates solid blocks 
-		createSolidBlocks();		
+		createSolidBlocks();	
+
+
+
 		}
 		else { //if player has a block bellow itself and its z = 9 or higher?? yeah you lose then
 			map->setGameStatus();// sets game to lose   
@@ -335,7 +341,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 	if (k_left + k_right + k_up + k_down == 1)	firstMove = true;
 
 	// Go in that direction 
-	int reduceBy = 1000;
+	int reduceBy = 1200;
 	switch (facing) {
 	case left: {	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
