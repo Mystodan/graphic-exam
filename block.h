@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "structs.h"
+#include "camera.h"
+#include "shaderClass.h"
 #include "vao.h"
 #include "ebo.h"
 #include "vbo.h"
@@ -20,6 +22,8 @@ public:
  *  @params color - sets color
  */
     Block(int x, int y, int z, float color) {
+
+
 		b_vertices.push_back({ x,y,z,color });
 		b_vertices.push_back({ x + 1,y,z,color });
 		b_vertices.push_back({ x + 1,y,z + 1,color });
@@ -35,25 +39,32 @@ public:
 		b_vertices.push_back({ x,y + 1,z + 1,color });
 		b_vertices.push_back({ x,y + 1,z,color });
 
-		b_vertices.push_back({ x,y + 1,z,color });
-		b_vertices.push_back({ x + 1,y + 1,z,color });
-		b_vertices.push_back({ x + 1,y + 1,z + 1,color });
-		b_vertices.push_back({ x,1,z + 1,color });
+		b_vertices.push_back({ x,y+1,z,color });
+		b_vertices.push_back({ x + 1,y+1,z,color });
+		b_vertices.push_back({ x + 1,y+1,z + 1,color });
+		b_vertices.push_back({ x,y+1,z + 1,color });
 
-		for (int i = 0; i < 4; i++) {
+		b_vertices.push_back({ x,y,z,color });
+		b_vertices.push_back({ x,y,z,color });
+		b_vertices.push_back({ x,y,z,color });
+		b_vertices.push_back({ x,y,z,color });
+
+
+		for (int i = 0; i < 5; i++) {
 			b_indices.push_back(i * 4);
 			b_indices.push_back((i * 4) + 1);
-			b_indices.push_back((i * 4) + 1);
-			b_indices.push_back(i * 4 + 2);
+			b_indices.push_back((i * 4) + 2);
+			
 
+			b_indices.push_back((i * 4));
 			b_indices.push_back((i * 4) + 2);
 			b_indices.push_back((i * 4) + 3);
-			b_indices.push_back((i * 4) + 3);
-			b_indices.push_back((i * 4));
+
 
 		}
 		/* ---buffers--- */
 // Generates Vertex Array Object and binds it
+		BlockShader = new Shader("shaders/default.vert", "shaders/default.frag");
 		vao = new VAO();
 		vao->Bind();
 
@@ -72,18 +83,21 @@ public:
 
     }
 
-
+	glm::vec3 getpos() { return glm::vec3{ x,y,z }; }
 	void setPos(int x, int y, int z) { this->x = x; this->y = y; this->z = z; }
 	void setColor(float color) { this->color = color; }
-    void draw() {
+    void draw(Camera* camera) {
+		BlockShader->Activate();
+		camera->Matrix(45.0f, 0.1f, 100.0f, *BlockShader, "camMatrix");
 		vao->Bind();
 		glLineWidth(2.f);
-		glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * b_indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * b_indices.size(), GL_UNSIGNED_INT, 0);
     }
     std::vector<glm::vec4> b_vertices;
     std::vector<GLuint> b_indices;
 
 private:
+    Shader* BlockShader;
     VBO* vbo;
     VAO* vao;
     EBO* ebo;

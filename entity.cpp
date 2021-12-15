@@ -168,18 +168,22 @@ void Entity::loadBuffers() {
  *	Loads and links VAO, VBO and EBO
  */
 void Entity::createSolidBlocks(float x, float y, float z) {
-	Block block(x, y, z, color);
-	
+	if (posZ < 9) {
+		Block block(posX, posY, posZ, color);
 
-	shader->Activate();
-	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
-	transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
-	camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformPac", transform);
-	for (auto& vert : block.b_vertices) {
-		vert = vert * transform;
+
+		shader->Activate();
+		glm::mat4 transform = glm::mat4(1.0f);
+		transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
+		transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
+		camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformPac", transform);
+		for (auto& vert : block.b_vertices) {
+			vert = vert * transform;
+		}
+		map->blocks.push_back(block);
+		std::cout << map->blocks.size() << "\n";
 	}
-	map->blocks.push_back(block);
+	else return;
 }
 
 /**
@@ -337,7 +341,6 @@ void Entity::move(GLFWwindow* window) {
 
 		map->setTileMode(posX, posY, posZ);
 		createSolidBlocks(0,0,0 );
-		drawSolidBlocks();
 		resetPos();
 	
 	};
@@ -443,6 +446,7 @@ void Entity::updatePos() {
 	transform = glm::translate(transform, glm::vec3(posX, posY, posZ));
 	transform = glm::rotate(transform, 0.0f/*(GLfloat)glfwGetTime() * -5.0f*/, glm::vec3(0.0f, 0.0f, 1.0f));
 	camera->Matrix(45.0f, 0.1f, 100.0f, *shader, "transformPac", transform);
+	std::cout << posZ << "\n";
 };
 
 /**
@@ -459,12 +463,12 @@ void Entity::draw() {
 	vao->Bind();
 	glLineWidth(2.f);
 	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * indices.size(), GL_UNSIGNED_INT, 0);
-
+	drawSolidBlocks();
 }
 void Entity::drawSolidBlocks() {
 
 	for (auto& blocks : map->blocks) {
-		blocks.draw();
+		blocks.draw(camera);
 	
 	}
 	
