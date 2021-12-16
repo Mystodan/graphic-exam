@@ -60,7 +60,7 @@ Palomar, R(2021) Lab06
 
  
 
-**Cheating/Plagiarism: **The exam is an individual, independent work. Examination aids are permitted. All submitted answers will be subject to plagiarism control. Read more about cheating and plagiarism here. You are allowed to use original code you have developed during the assignments, however, any external source that has been directly added (copied) to your assignments, and therefore to the exam, needs to be properly referenced and might affect to your grade if your own contribution is not enough.
+**Cheating/Plagiarism: ** The exam is an individual, independent work. Examination aids are permitted. All submitted answers will be subject to plagiarism control. Read more about cheating and plagiarism here. You are allowed to use original code you have developed during the assignments, however, any external source that has been directly added (copied) to your assignments, and therefore to the exam, needs to be properly referenced and might affect to your grade if your own contribution is not enough.
  
 
 You have unrestricted use of the code **that you (or your group) **originally** developed** for the assignments (also if you extended or corrected it after the assignments). If your assignments contain code from other sources (e.g., labs or other sources) and want to include it, you need to cite it properly, however, depending on the size an importance of the code, this could be considered as less contribution from your side and affect your scoring. Obvious and short code snippets are safe to use and cite without affecting your scoring (as a rule of thumb consider the functions of the labs safe to use; larger pieces of code or pieces of code that manages more complex aspects can affect your scoring).
