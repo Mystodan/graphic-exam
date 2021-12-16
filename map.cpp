@@ -24,9 +24,9 @@ Map::Map(int width, int height, int depth) {
  * Cleans up memory when application closes
  */
 Map::~Map() {
-	t_VAO->Delete();
-	t_VBO->Delete();
-	t_EBO->Delete();
+	g_VAO->Delete();
+	g_VBO->Delete();
+	g_EBO->Delete();
 	mapShader->Delete();
 	delete camera;
 	for (auto& b : blocks) {
@@ -63,22 +63,22 @@ void Map::loadBuffers() {
 	mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
 	/* --- Tile buffers */
 	// Generates Vertex Array Object and binds it
-	t_VAO = new VAO();
-	t_VAO->Bind();
+	g_VAO = new VAO();
+	g_VAO->Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	t_VBO = new VBO(grid_Vert);
+	g_VBO = new VBO(grid_Vert);
 	// Generates Element Buffer Object and links it to indices
-	t_EBO = new EBO(grid_Ind);
+	g_EBO = new EBO(grid_Ind);
 
 	// Links VBO attributes such as coordinates and colors to VAO
-	t_VAO->LinkAttrib(t_VBO, 0, 3, GL_FLOAT, 4 * sizeof(float), (void*)0);
-	t_VAO->LinkAttrib(t_VBO, 1, 1, GL_FLOAT, 4 * sizeof(float), (void*)(3 * sizeof(float)));
+	g_VAO->LinkAttrib(g_VBO, 0, 3, GL_FLOAT, 4 * sizeof(float), (void*)0);
+	g_VAO->LinkAttrib(g_VBO, 1, 1, GL_FLOAT, 4 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	// Unbind all to prevent accidentally modifying them
-	t_VAO->Unbind();
-	t_VBO->Unbind();
-	t_EBO->Unbind();
+	g_VAO->Unbind();
+	g_VBO->Unbind();
+	g_EBO->Unbind();
 
 
 	std::cout << "Done generating buffers." << std::endl;
@@ -369,7 +369,7 @@ void Map::printAllTiles() {
  *	Draws tiles on screen.
  */
 void Map::tileDraw() {
-	t_VAO->Bind();
+	g_VAO->Bind();
 	glLineWidth(1.f);
 	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * grid_Ind.size(), GL_UNSIGNED_INT, 0);
 }

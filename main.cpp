@@ -74,13 +74,13 @@ int main()
     // Enable MSAA
     glEnable(GL_MULTISAMPLE);
 
-
-    Map*            level = new Map(10,10,10);
+    int mapWidth = 5, mapHeight = 5, mapDepth = 10;
+    Map*            level = new Map(mapWidth, mapHeight, mapDepth);
     PlayerBlock*    Player = new PlayerBlock(level);
- 
-
-    Camera* camera = new Camera(width, height, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
-   // level->setcamera(camera);
+    Camera*         camera = new Camera(width, height, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
+  
+    
+    // level->setcamera(camera);
     level->setCamera(camera);
     Player->setCamera(camera);
     // Specify the color of the background
@@ -120,6 +120,9 @@ int main()
 
         if (!level->getGameStatus())
         {
+            delete Player;
+            delete level;
+            delete camera;
             break;
         }
     }
