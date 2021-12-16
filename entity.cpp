@@ -300,7 +300,7 @@ void PlayerBlock::move(GLFWwindow* window) {
 		gravityTT = std::chrono::steady_clock::now(); // player dropping based on timer
 		if (std::chrono::duration_cast<std::chrono::seconds>(gravityTT - gravityCounter).count() >= n) {
 			gravityCounter = std::chrono::steady_clock::now();
-			posZ -= 1;
+			if (posZ > 0) { posZ -= 1; }
 			roundPos(1, 1, 1);
 		}
 	}
@@ -383,11 +383,19 @@ void PlayerBlock::move(GLFWwindow* window) {
 	// Updates player position
 	Entity::updatePos();
 };
-
+/**
+* Updates position of player
+*/
 void PlayerBlock::updatePos() {
 	Entity::updatePos();
 }
 
+/**
+ *	gets random numbers
+ * 
+ * @param min - minimum 
+ * @param max - maximum 
+ */
 double Entity::getRandNum(int min, int max) {
 
 	// x is in [0,1[
@@ -423,16 +431,15 @@ void Entity::setCamera(Camera* camera) {
  */
 void Entity::draw() {
 	vao->Bind();
-	glLineWidth(2.f);
+	glLineWidth(6.f);
 	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * indices.size(), GL_UNSIGNED_INT, 0);
 	drawSolidBlocks();
 }
+/**
+ *	loops and draws blocks on screen
+ */
 void Entity::drawSolidBlocks() {
-
 	for (auto& blocks : map->blocks) {
 		blocks.draw(camera);
-	
 	}
-	
-
 }

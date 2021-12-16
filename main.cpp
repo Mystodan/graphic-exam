@@ -69,7 +69,7 @@ int main()
 	}
     // Enable depht buffer 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_ALPHA);
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // Enable MSAA
     glEnable(GL_MULTISAMPLE);
@@ -99,7 +99,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Tell OpenGL which Shader Program we want to use
 
-        camera->Inputs(window);
+       // camera->Inputs(window);
 
         // draws map
 
