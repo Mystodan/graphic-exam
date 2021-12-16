@@ -36,14 +36,14 @@ Palomar, R(2021) Lab06
 
 # Exam Description
 
-**Department of Computer Science** </br>
-**Examination paper for PROG2002 – Graphics Programming** </br>
-**Examination date: December, 13th 2021** </br>
-**Examination time (from-to): Dec, 13th 09.00am – Dec, 16th 09.00am** </br>
-**Permitted examination support material: A / All support material is allowed** </br>
-**Academic contact during examination: rafael.palomar@ntnu.no** </br>
-**Administrative contact during examination: eksamen@gjovik.ntnu.no** </br>
-**Phone: 61135400**
+-   **Department of Computer Science** 
+-   **Examination paper for PROG2002 – Graphics Programming** 
+-   **Examination date: December, 13th 2021** 
+-   **Examination time (from-to): Dec, 13th 09.00am – Dec, 16th 09.00am** 
+-   **Permitted examination support material:**  A / All support material is allowed
+-   **Academic contact during examination:**  rafael.palomar@ntnu.no
+-   **Administrative contact during examination:**  eksamen@gjovik.ntnu.no
+-   **Phone:**  61135400
 
 
  
@@ -56,11 +56,11 @@ Palomar, R(2021) Lab06
 
  
 
--   **Read the questions **carefully, make your own assumptions and specify them in your answer. Only contact academic contact if you think there are errors or insufficiencies in the question set.
+-   **Read the questions** carefully, make your own assumptions and specify them in your answer. Only contact academic contact if you think there are errors or insufficiencies in the question set.
 
  
 
-**Cheating/Plagiarism: ** The exam is an individual, independent work. Examination aids are permitted. All submitted answers will be subject to plagiarism control. Read more about cheating and plagiarism here. You are allowed to use original code you have developed during the assignments, however, any external source that has been directly added (copied) to your assignments, and therefore to the exam, needs to be properly referenced and might affect to your grade if your own contribution is not enough.
+**Cheating/Plagiarism:** The exam is an individual, independent work. Examination aids are permitted. All submitted answers will be subject to plagiarism control. Read more about cheating and plagiarism here. You are allowed to use original code you have developed during the assignments, however, any external source that has been directly added (copied) to your assignments, and therefore to the exam, needs to be properly referenced and might affect to your grade if your own contribution is not enough.
  
 
 You have unrestricted use of the code **that you (or your group) **originally** developed** for the assignments (also if you extended or corrected it after the assignments). If your assignments contain code from other sources (e.g., labs or other sources) and want to include it, you need to cite it properly, however, depending on the size an importance of the code, this could be considered as less contribution from your side and affect your scoring. Obvious and short code snippets are safe to use and cite without affecting your scoring (as a rule of thumb consider the functions of the labs safe to use; larger pieces of code or pieces of code that manages more complex aspects can affect your scoring).
