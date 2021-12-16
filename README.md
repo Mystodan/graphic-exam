@@ -35,20 +35,15 @@ Palomar, R(2021) Lab06
 
 
 #Exam Description
-**Department of Computer Science
 
-Examination paper for PROG2002 – Graphics Programming
-
-Examination date: December, 13th 2021
-
-Examination time (from-to): Dec, 13th 09.00am – Dec, 16th 09.00am
-
-Permitted examination support material: A / All support material is allowed
-
-Academic contact during examination: rafael.palomar@ntnu.no
-
-Administrative contact during examination: eksamen@gjovik.ntnu.no
-Phone: 61135400**
+**Department of Computer Science**
+**Examination paper for PROG2002 – Graphics Programming**
+**Examination date: December, 13th 2021**
+**Examination time (from-to): Dec, 13th 09.00am – Dec, 16th 09.00am**
+**Permitted examination support material: A / All support material is allowed**
+**Academic contact during examination: rafael.palomar@ntnu.no**
+**Administrative contact during examination: eksamen@gjovik.ntnu.no**
+**Phone: 61135400**
 
 
  
