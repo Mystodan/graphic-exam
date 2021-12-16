@@ -387,5 +387,5 @@ void Map::draw(GLFWwindow* window) {
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
 		setGameStatus();
-
+		
 }

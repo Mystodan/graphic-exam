@@ -114,6 +114,7 @@ int main()
 
         if (!level->getGameStatus())
         {
+            window = glfwCreateWindow(16 * res, 9 * res, "BlockOut", NULL, NULL);
             std::cout << "Game ENDED\n"; 
             delete Player;
             delete camera;
