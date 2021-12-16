@@ -6,10 +6,9 @@
 
 
 /**
- *	Loads level, tiles, pellets and buffers
- *	@see loadLevel(..)
+ *	Creates level, and loads tiles, and buffers
+ *	@see createLevel(..)
  *	@see loadTiles(..)
- *	@see loadPellets(..)
  *  @see loadBuffers(..)
  */
 Map::Map(int width, int height, int depth) {
@@ -59,7 +58,7 @@ void Map::createLevel() {
  *	Links verticies and indicies
  */
 void Map::loadBuffers() {
-	std::cout << "Generating buffers for tiles and pellets ..." << std::endl;
+	std::cout << "Generating buffers for tiles ..." << std::endl;
 	mapShader = new Shader("shaders/grid.vert", "shaders/grid.frag");
 	/* --- Tile buffers */
 	// Generates Vertex Array Object and binds it
@@ -88,7 +87,7 @@ void Map::loadBuffers() {
 /**
  *	Loads tiles based on information from level
  *	@see getTileMode(..)
- *	@see pushPellet(..)
+ *	@see pushTile(..)
  */
 void Map::loadTiles() {
 	std::cout << "Setting tiles ..." << std::endl;
@@ -152,12 +151,13 @@ std::pair<int, int>	Map::coordsToTile(float x, float y) {
 }
 
 /**
- *	Changes pellet mode when player eats it,
- *	and color changes to black.
+ *	Creates a tile based on inndata
+ *	with modes
  *
  *	@param x - X-position.
  *	@param y - Y-position.
- *	@param mode - wall/tunnel
+ *	@param z - Z-position.
+ *	@param mode - Solid/air
  *	@param size - Default 1.f
  * 
  *	@see tileToCoords(x1, y1)
@@ -375,8 +375,8 @@ void Map::tileDraw() {
 }
 
 /**
- *	Draws map items, tiles, pellets.
- *	Quits game on escape, or 0 pellets.
+ *	Draws map tiles.
+ *	Quits game on escape or max build height reached.
  *	@param window - GLFW window
  */
 void Map::draw(GLFWwindow* window) {

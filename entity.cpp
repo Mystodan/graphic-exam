@@ -182,7 +182,7 @@ int Entity::checkSolidBlock() {
 }
 
 /**
- *	Checks for tile and pellet collision
+ *	Checks for tile collision
  *	@param facing - direction
  *	@return The mode of the tile in front of us
  */

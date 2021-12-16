@@ -28,8 +28,7 @@ private:
 	
 	unsigned int		width, 
 						height,
-						depth,
-						gPellets = 0;
+						depth;
 
 	bool				gameOn = true;
 	int					tempwidth, 
