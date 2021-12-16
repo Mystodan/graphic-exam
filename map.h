@@ -46,7 +46,7 @@ private:
 	VAO*				t_VAO;
 	VBO*				t_VBO;
 	EBO*				t_EBO;
-	
+
 	std::vector<glm::vec4>  grid_Vert;
 	std::vector<GLuint>     grid_Ind;
 	std::vector<GLuint>	    t_types;
@@ -56,6 +56,10 @@ private:
 
 
 public:
+
+	Shader* mapShader;
+	Camera* camera;
+
 	std::vector<Block>	    blocks;
 	std::vector<GLuint> getType() { return t_types; }
 
@@ -76,6 +80,7 @@ glm::vec3
 	void setTileMode(int x, int y, int z, bool state = false, bool entityUse = true);
 	void setSpawn(glm::vec3 newPos)	{ spawnTile = newPos; }
 	void setGameStatus(bool mode = false) { this->gameOn = mode; }
+	void setCamera(Camera* camera) {this->camera = camera;}
 	std::pair<float, float> tileToCoords(float x, float y);
 	glm::vec3 tileToCoords(float x, float y, float z);
 	std::pair<int, int>		coordsToTile(float x, float y);

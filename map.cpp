@@ -27,8 +27,11 @@ Map::~Map() {
 	t_VAO->Delete();
 	t_VBO->Delete();
 	t_EBO->Delete();
-
-
+	mapShader->Delete();
+	delete camera;
+	for (auto& b : blocks) {
+		b.Delete();
+	}
 }
 
 
@@ -57,7 +60,7 @@ void Map::createLevel() {
  */
 void Map::loadBuffers() {
 	std::cout << "Generating buffers for tiles and pellets ..." << std::endl;
-
+	mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
 	/* --- Tile buffers */
 	// Generates Vertex Array Object and binds it
 	t_VAO = new VAO();
@@ -377,6 +380,9 @@ void Map::tileDraw() {
  *	@param window - GLFW window
  */
 void Map::draw(GLFWwindow* window) {
+	mapShader->Activate();
+	camera->Matrix(45.0f, 0.1f, 100.0f, *mapShader, "camMatrix");
+
 	tileDraw();
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))

@@ -75,12 +75,13 @@ int main()
     glEnable(GL_MULTISAMPLE);
 
 
-    Map*            level = new Map(5,5,10);
+    Map*            level = new Map(10,10,10);
     PlayerBlock*    Player = new PlayerBlock(level);
-    Shader*         mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
+ 
 
     Camera* camera = new Camera(width, height, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
    // level->setcamera(camera);
+    level->setCamera(camera);
     Player->setCamera(camera);
     // Specify the color of the background
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -101,8 +102,7 @@ int main()
         camera->Inputs(window);
 
         // draws map
-        mapShader->Activate();
-        camera->Matrix(45.0f, 0.1f, 100.0f, *mapShader, "camMatrix");
+
         
         level->draw(window);
 

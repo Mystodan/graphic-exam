@@ -25,6 +25,7 @@ Entity::~Entity() {
 	vao->Delete();
 	vbo->Delete();
 	ebo->Delete();
+	
 };
 
 /**
