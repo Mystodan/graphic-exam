@@ -31,7 +31,6 @@ int main()
 
         return EXIT_FAILURE;
     }
-
     // Setting window hints
     //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     //lfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -40,15 +39,12 @@ int main()
     glfwWindowHint(GLFW_SAMPLES, MSAAsamples);
     // Tell glfw we are using the core profiles, meaning we only have modern functions
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
-    int width = 0, height = 0, res = 40;
+    int mapWidth = 5, mapHeight = 5, mapDepth = 10;
+    int res = 1000;
     srand(time(NULL));
     std::ifstream inn("levels/level0");
-    if (inn) { inn >> width; inn.ignore(1); inn >> height; }
-    
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* screenMode = glfwGetVideoMode(monitor);
-    GLFWwindow* window = glfwCreateWindow(width * res, height * res, "BlockOut", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(16 * res, 9 * res, "BlockOut", monitor, NULL);
 
     if (window == nullptr) {
         std::cerr << "GLFW failed on window creation." << '\n';
@@ -74,10 +70,10 @@ int main()
     // Enable MSAA
     glEnable(GL_MULTISAMPLE);
 
-    int mapWidth = 5, mapHeight = 5, mapDepth = 10;
+    
     Map*            level = new Map(mapWidth, mapHeight, mapDepth);
     PlayerBlock*    Player = new PlayerBlock(level);
-    Camera*         camera = new Camera(width, height, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
+    Camera*         camera = new Camera(16, 9, glm::vec3(level->getWidth() / 2.f, level->getHeight() / 2.f, level->getDepht()*2.f));
   
     
     // level->setcamera(camera);
@@ -88,11 +84,9 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        // Scale with aspect ratio
         int tempwidth, tempheight;
         glfwGetFramebufferSize(window, &tempwidth, &tempheight);
         glViewport(0, 0, tempwidth, tempheight);
-        glfwSetWindowAspectRatio(window, screenMode->height, screenMode->height);
 
       
         // Clean the back buffer and depth buffer
