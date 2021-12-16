@@ -66,6 +66,6 @@ You have unrestricted use of the code **that you (or your group) **originally** 
 
 
 
-**Weighting:** The exam consists of 5 tasks with 2 extra tasks. Extra tasks are only to give extra point, this means that a student could still achieve the maximum grade with a perfect scoring in the 5 regular tasks only. The scoring moves in a scale 0-10 (+3 possible extra points); Scoring from 0-4.99 will be graded as F, while scoring from 5-10 will be graded as E-A depending on the scoring achieved. Exceeding 10 points will be considered also as A.
+**Weighting:**  The exam consists of 5 tasks with 2 extra tasks. Extra tasks are only to give extra point, this means that a student could still achieve the maximum grade with a perfect scoring in the 5 regular tasks only. The scoring moves in a scale 0-10 (+3 possible extra points); Scoring from 0-4.99 will be graded as F, while scoring from 5-10 will be graded as E-A depending on the scoring achieved. Exceeding 10 points will be considered also as A.
 
  
