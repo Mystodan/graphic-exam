@@ -28,10 +28,10 @@ Map::~Map() {
 	g_VBO->Delete();
 	g_EBO->Delete();
 	mapShader->Delete();
-	delete camera;
 	for (auto& b : blocks) {
 		b.Delete();
-	}
+	}     
+
 }
 
 

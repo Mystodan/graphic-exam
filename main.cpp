@@ -120,10 +120,11 @@ int main()
 
         if (!level->getGameStatus())
         {
+            std::cout << "Game ENDED\n"; 
             delete Player;
-            delete level;
             delete camera;
-            break;
+            delete level;
+            return EXIT_SUCCESS;
         }
     }
 

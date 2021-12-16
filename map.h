@@ -70,7 +70,7 @@ public:
 	int  getHeight()	{ return height; }
 	int  getDepht()	{ return depth; }
 
-
+	
 	int  getTileMode(int x, int y, bool entityUse = true);
 	int  getTileMode(int x, int y, int z, bool entityUse = true);
 glm::vec3 

@@ -281,35 +281,24 @@ void PlayerBlock::move(GLFWwindow* window) {
 
 	// Check if we can actually turn towards newdir, 
 	// if so change speed.
+	if (checkFacingTile(newDir) || !singleStep) { facing = newDir; speed = constSpeed; }
+	if (checkFacingTile(newDir) == 0) { speed = 0;}
 
-	if (checkFacingTile(newDir) || !singleStep) {
-		facing = newDir; speed = constSpeed; 
-	}
-	if (checkFacingTile(newDir) == 0) {
-		speed = 0;
-	}
-
+	// Timers
+	int n = dropTimer -1; // minus one because timer starts at 0 -> 1 -> 2.
 	if (tpDelay) {
-		tp_eTT = std::chrono::steady_clock::now();
-		if (std::chrono::duration_cast<std::chrono::milliseconds>(tp_eTT - tp_Count).count() > 0.5 * 1000.f) {
+		tp_eTT = std::chrono::steady_clock::now();		
+		if (std::chrono::duration_cast<std::chrono::milliseconds>(tp_eTT - tp_Count).count() > 0.2 * 1000.f) {
 			if (k_space) {
 						posZ -= speed;
 						roundPos(1, 1, 1);
 			}
 			tpDelay = false;
-		}	
-	}
-	else {
-		if (k_space) {
-		posZ -= speed;
-	
-		}
-	}
-
+	}	}
+	else { if (k_space) { posZ -= speed;}} // player wont drop unless any movement based key is pressed
 	if (firstMove) {
-		
-		gravityTT = std::chrono::steady_clock::now();
-		if (std::chrono::duration_cast<std::chrono::seconds>(gravityTT - gravityCounter).count() >= 3) {
+		gravityTT = std::chrono::steady_clock::now(); // player dropping based on timer
+		if (std::chrono::duration_cast<std::chrono::seconds>(gravityTT - gravityCounter).count() >= n) {
 			gravityCounter = std::chrono::steady_clock::now();
 			posZ -= 1;
 			roundPos(1, 1, 1);
@@ -344,15 +333,14 @@ void PlayerBlock::move(GLFWwindow* window) {
 	 //create solid block at z = 0
 
 	// Flips firstMove to true when player starts moving
-	if (k_left + k_right + k_up + k_down == 1)	firstMove = true;
+	if (k_left + k_right + k_up + k_down + k_space <= 1)	firstMove = true;
 
-	// Go in that direction 
-	int reduceBy = 1200;
+	// What happens if Player
+	// goes in that direction 
 	switch (facing) {
 	case left: {	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX -= speed; 
-		
 			turnCounter = std::chrono::steady_clock::now(); 
 			singleStep = false;  
 			facing = none;  break;
@@ -361,7 +349,6 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case right: {	
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posX += speed;
-			
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
@@ -370,7 +357,6 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case up:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY += speed;
-		
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none; break;
@@ -379,7 +365,6 @@ void PlayerBlock::move(GLFWwindow* window) {
 	case down:	{	 
 		if (singleStep && checkFacingTile(newDir) == 1) {
 			posY -= speed;
-		
 			turnCounter = std::chrono::steady_clock::now();
 			singleStep = false;
 			facing = none;  break;
@@ -401,7 +386,6 @@ void PlayerBlock::move(GLFWwindow* window) {
 
 void PlayerBlock::updatePos() {
 	Entity::updatePos();
-
 }
 
 double Entity::getRandNum(int min, int max) {

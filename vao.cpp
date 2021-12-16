@@ -7,7 +7,6 @@ VAO::VAO()
 {
 	glGenVertexArrays(1, &ID);
 }
-;;
 /**
  *	Links a VBO Attribute such as a position or color to the VAO
  */

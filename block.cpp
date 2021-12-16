@@ -1,5 +1,10 @@
 #include "block.h"
-
+/**
+* Creates a block based on position
+* @param x - x position 
+* @param y - y position 
+* @param z - z position 
+*/
 Block::Block(int x, int y, int z) {
 
 	switch (z)
@@ -78,6 +83,10 @@ Block::Block(int x, int y, int z) {
 
 }
 
+/**
+* Draws a block
+* @param camera - camera 
+*/
 void Block::draw(Camera* camera) {
 	BlockShader->Activate();
 	camera->Matrix(45.0f, 0.1f, 100.0f, *BlockShader, "camMatrix");

@@ -55,6 +55,7 @@ class Entity {
 		void setCamera(Camera* camera);
 		void setTileMode(int x, int y, int z);
 
+		int dropTimer = 2; //dropTimer
 		int  checkFacingTile(direction facing);
 		int  checkSolidBlock();
 		void updatePos();
