@@ -60,7 +60,7 @@ void Map::createLevel() {
  */
 void Map::loadBuffers() {
 	std::cout << "Generating buffers for tiles and pellets ..." << std::endl;
-	mapShader = new Shader("shaders/default.vert", "shaders/default.frag");
+	mapShader = new Shader("shaders/grid.vert", "shaders/grid.frag");
 	/* --- Tile buffers */
 	// Generates Vertex Array Object and binds it
 	g_VAO = new VAO();
