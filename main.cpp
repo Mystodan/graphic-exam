@@ -40,7 +40,7 @@ int main()
     // Tell glfw we are using the core profiles, meaning we only have modern functions
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     int mapWidth = 5, mapHeight = 5, mapDepth = 10;
-    int res = 1000;
+    int res = 100;
     srand(time(NULL));
     std::ifstream inn("levels/level0");
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();

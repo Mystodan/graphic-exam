@@ -91,5 +91,5 @@ void Block::draw(Camera* camera) {
 	BlockShader->Activate();
 	camera->Matrix(45.0f, 0.1f, 100.0f, *BlockShader, "camMatrix");
 	vao->Bind();
-	glDrawElements(GL_TRIANGLES, sizeof(GLuint) * b_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, b_indices.size(), GL_UNSIGNED_INT, 0);
 }

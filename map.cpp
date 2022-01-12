@@ -371,7 +371,7 @@ void Map::printAllTiles() {
 void Map::tileDraw() {
 	g_VAO->Bind();
 	glLineWidth(3.5f);
-	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * grid_Ind.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, grid_Ind.size(), GL_UNSIGNED_INT, 0);
 }
 
 /**

@@ -1,5 +1,6 @@
-#include "VBO.h"
+#include "vbo.h"
 #include <vector>
+#include <iostream>
 /**
  *	Constructor that generates a Vertex Buffer Object and links it to vertices
  */
@@ -50,19 +51,20 @@ void VBO::Delete() {
  *	@return size - of vector
  */
 int VBO::getBytes(const std::vector<GLfloat>vertices) {
-	return sizeof(std::vector<GLfloat>) + sizeof(GLfloat)*vertices.size();
+	return sizeof(GLfloat)*vertices.size();
 }
 /**
  *	gets bytes of our data type
  *	@return size - of vector
  */
 int VBO::getBytes(const std::vector<glm::vec4>vertices) {
-	return sizeof(std::vector<glm::vec4>) + sizeof(glm::vec4) * vertices.size();
+	return sizeof(glm::vec4) * vertices.size();
 }
 /**
  *	gets bytes of our data type
  *	@return size - of vector
  */
 int VBO::getBytes(const std::vector<blockVertex>vertices) {
-	return sizeof(std::vector<Vertex>) + sizeof(Vertex) * vertices.size();
+	return sizeof(blockVertex) * vertices.size();
+
 }

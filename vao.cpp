@@ -1,4 +1,4 @@
-#include "VAO.h"
+#include "vao.h"
 
 /**
  *	Generates a VAO ID

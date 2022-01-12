@@ -41,8 +41,8 @@ target_link_libraries(
 	${PROJECT_NAME}
 	glfw
 	glm
-  	glad
-	OpenGL::GL)
+  glad
+  OpenGL::GL)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/level0
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels)

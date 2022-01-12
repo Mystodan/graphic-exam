@@ -5,6 +5,7 @@
 #include "vbo.h"
 #include <iostream>
 #include "structs.h"
+#include <memory>
 
 class VAO {
 public:

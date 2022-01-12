@@ -432,7 +432,7 @@ void Entity::setCamera(Camera* camera) {
 void Entity::draw() {
 	vao->Bind();
 	glLineWidth(6.f);
-	glDrawElements(GL_LINES, sizeof(std::vector<GLuint>) + sizeof(GLuint) * indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 	drawSolidBlocks();
 }
 /**
